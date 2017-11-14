@@ -64,8 +64,11 @@ def main(lr, batch_size, alpha, beta, image_size, K,
     )
 
   # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
-  with tf.Session(config=tf.ConfigProto(allow_soft_placement=True,
-                  log_device_placement=False,allow_growth=True)) as sess:
+  config=tf.ConfigProto(allow_soft_placement=True,
+                  log_device_placement=False,allow_growth=True)
+  config.gpu_options.allow_growth = True
+
+  with tf.Session(config=config) as sess:
 
     tf.global_variables_initializer().run()
 
