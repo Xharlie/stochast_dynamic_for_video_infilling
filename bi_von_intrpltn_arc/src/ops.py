@@ -93,7 +93,7 @@ def deconv3d(input_, output_shape,
         w = tf.get_variable('w', [k_d, k_h, k_w, output_shape[-1],
                                   input_.get_shape()[-1]],
                             initializer=tf.contrib.layers.xavier_initializer())
-        deconv = tf.nn.conv2d_transpose(input_, w,
+        deconv = tf.nn.conv3d_transpose(input_, w,
                                         output_shape=output_shape,
                                         strides=[1, s_d, s_h, s_w, 1],
                                         padding=padding)

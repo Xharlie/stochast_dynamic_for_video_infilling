@@ -49,7 +49,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
   if not exists(summary_dir):
     makedirs(summary_dir)
 
-  with tf.device("/gpu:%d"%gpu[0]):
+  with tf.device("/cpu:0"):
     model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, batch_size=batch_size, T=T,
                   checkpoint_dir=checkpoint_dir)
@@ -62,7 +62,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
 
   gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
   with tf.Session(config=tf.ConfigProto(allow_soft_placement=True,
-                  log_device_placement=False,
+                  log_device_placement=False,allow_growth=True,
                   gpu_options=gpu_options)) as sess:
 
     tf.global_variables_initializer().run()
@@ -102,12 +102,13 @@ def main(lr, batch_size, alpha, beta, image_size, K,
                                                                             paths,
                                                                             shapes,
                                                                             Ks, Ts))
-
+            print output[0].shape
             for i in xrange(batch_size):
               seq_batch[i] = output[i]
 
+            print seq_batch.shape
             seq_batch_tran = seq_batch.transpose([0,3,1,2,4])
-            forward_seq = seq_batch[:,:K,:,:,:]
+            forward_seq = seq_batch_tran[:,:K,:,:,:]
             backward_seq = seq_batch_tran[:,::-1][:,:K,:,:,:]
             if updateD:
               _, summary_str = sess.run([d_optim, d_sum],
