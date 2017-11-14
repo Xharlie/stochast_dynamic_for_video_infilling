@@ -49,7 +49,10 @@ def main(lr, batch_size, alpha, beta, image_size, K,
   if not exists(summary_dir):
     makedirs(summary_dir)
 
-  with tf.device("/cpu:0"):
+  device_string="/gpu:%d"%gpu[0]
+  if gpu[0] == 10:
+      device_string = "/cpu:0"
+  with tf.device(device_string):
     model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, batch_size=batch_size, T=T,
                   checkpoint_dir=checkpoint_dir)
@@ -60,10 +63,9 @@ def main(lr, batch_size, alpha, beta, image_size, K,
         alpha*model.L_img+beta*model.L_GAN, var_list=model.g_vars
     )
 
-  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
+  # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
   with tf.Session(config=tf.ConfigProto(allow_soft_placement=True,
-                  log_device_placement=False,allow_growth=True,
-                  gpu_options=gpu_options)) as sess:
+                  log_device_placement=False,allow_growth=True)) as sess:
 
     tf.global_variables_initializer().run()
 
