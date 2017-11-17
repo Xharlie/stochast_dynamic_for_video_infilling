@@ -92,7 +92,7 @@ def load_kth_data(f_name, data_path, image_size, K, T):
   vid_path = data_path + tokens[0] + "_uncomp.avi"
   vid = imageio.get_reader(vid_path,"ffmpeg")
   low = int(tokens[1])
-  high = np.min([int(tokens[2]),vid.get_length()])-2*K-T+1
+  high = np.min([int(tokens[2]),vid.get_length()])- 2 * K - T + 1
   if low == high:
     stidx = 0 
   else:

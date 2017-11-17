@@ -119,9 +119,6 @@ class bi_von_net(object):
         self.saver = tf.train.Saver(max_to_keep=10)
 
     def forward(self, for_seq, back_seq, seq_in, fxt, bxt):
-        # Initial state
-        state = tf.zeros([self.batch_size, self.image_size[0] / 8,
-                          self.image_size[1] / 8, 512])
         reuse = False
 
         # Forward and backward seq feature extraction
@@ -166,15 +163,15 @@ class bi_von_net(object):
                    output_dim=self.gf_dim * 2, rate=2, name='fea_atrous_conv2', reuse=reuse))
 
             conv3 = relu(atrous_conv2d(conv2,
-                   output_dim=self.gf_dim * 4, rate=4, name='fea_atrous_conv3', reuse=reuse))
+                   output_dim=self.gf_dim * 2, rate=4, name='fea_atrous_conv3', reuse=reuse))
 
             conv4 = relu(atrous_conv2d(conv3,
-                   output_dim=self.gf_dim * 8, rate=8, name='fea_atrous_conv4', reuse=reuse))
+                   output_dim=self.gf_dim * 4, rate=8, name='fea_atrous_conv4', reuse=reuse))
             if feature is None:
-                feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 8])
+                feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 4])
             else:
                 feature=tf.concat([feature,
-                                   tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 8])
+                                   tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 4])
                                    ], 1)
             reuse = True
         return feature
