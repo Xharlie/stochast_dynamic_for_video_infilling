@@ -14,6 +14,8 @@ from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K,
          T, num_iter, gpu, tf_record_train_dir, tf_record_test_dir, color_channel_num, cpu):
+  check_create_dir(tf_record_train_dir)
+  check_create_dir(tf_record_test_dir)
   tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
   train_vids = []
   if len(tf_record_files) == 0:

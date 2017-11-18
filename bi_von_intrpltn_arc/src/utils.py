@@ -6,7 +6,7 @@ import random
 import imageio
 import scipy.misc
 import numpy as np
-
+import os
 
 def transform(image):
     return image/127.5 - 1.
@@ -173,3 +173,10 @@ def load_s1m_data(f_name, data_path, trainlist, K, T):
 
   return seq, diff
 
+
+def check_create_dir(dir):
+    try:
+        os.stat(dir)
+    except:
+        os.mkdir(dir)
+    return dir
