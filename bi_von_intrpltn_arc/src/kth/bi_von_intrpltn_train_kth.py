@@ -6,14 +6,13 @@ import glob
 from os import listdir, makedirs, system
 from os.path import exists
 from argparse import ArgumentParser
-from joblib import Parallel, delayed
 sys.path.append("../")
 import load_save_data
 from bi_von_model import bi_von_net
 from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K,
-         T, num_iter, gpu, tf_record_train_dir, tf_record_test_dir, color_channel_num, cpu):
+         T, num_iter, gpu, cpu, tf_record_train_dir, tf_record_test_dir, color_channel_num):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
   tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')

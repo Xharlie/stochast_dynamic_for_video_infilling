@@ -121,10 +121,7 @@ def load_kth_data_from_list(train_vids_batch, image_size, K, T):
     else:
       stidx = np.random.randint(low=low, high=high)
     for t in xrange(2*K+T):
-      img = cv2.cvtColor(cv2.resize(train_vids_batch[i].get_data(stidx+t),
-                         (image_size,image_size)),
-                         cv2.COLOR_RGB2GRAY)
-      seq[i,:,:,t] = transform(img[:,:,None])
+      seq[i,:,:,t] = transform(train_vids_batch[i][:,:,t,:])
 
     if flip == 1:
       seq = seq[:,::-1]

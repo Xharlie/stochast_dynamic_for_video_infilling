@@ -37,7 +37,7 @@ def save_kth_data2record(tfiles, data_path, image_size, tf_record_dir, channel):
                 'width': _int64_feature(image_size),
                 'depth': _int64_feature(vids[i].shape[2]),
                 'channels': _int64_feature(channel),
-                'image_raw': _bytes_feature(vids[i].tostring())
+                'vid': _bytes_feature(vids[i].tostring())
             }
         ))
         writer.write(vids_record.SerializeToString())
@@ -47,7 +47,7 @@ def save_kth_data2record(tfiles, data_path, image_size, tf_record_dir, channel):
 
 def load_kth_records(tf_record_dir):
     vids = []
-    tf_record_files = glob.glob(tf_record_dir + '*.tfrecords', recursive=False)
+    tf_record_files = glob.glob(tf_record_dir + '*.tfrecords')
     for i in xrange(len(tf_record_files)):
         record_iterator = tf.python_io.tf_record_iterator(path=tf_record_files[i])
         for string_record in record_iterator:
@@ -66,11 +66,11 @@ def load_kth_records(tf_record_dir):
                         .int64_list
                         .value[0])
 
-            img_string = (example.features.feature['vid']
+            vid_string = (example.features.feature['vid']
                           .bytes_list
                           .value[0])
 
-            vid_raw = np.fromstring(img_string, dtype=np.uint8)
+            vid_raw = np.fromstring(vid_string, dtype=np.uint8)
             vid = vid_raw.reshape((height, width, depth, -1))
             vids.append(vid)
     return vids
