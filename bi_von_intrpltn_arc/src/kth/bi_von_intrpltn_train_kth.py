@@ -109,8 +109,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
         mini_batches = get_minibatches_idx(len(train_vids), batch_size, shuffle=True)
         for _, batchidx in mini_batches:
           if len(batchidx) == batch_size:
-            seq_batch = np.zeros((batch_size, image_size, image_size,
-                                   2*K+T, 1), dtype="float32")
+
             t0 = time.time()
             Ts = np.repeat(np.array([T]),batch_size,axis=0)
             Ks = np.repeat(np.array([K]),batch_size,axis=0)
@@ -124,7 +123,8 @@ def main(lr, batch_size, alpha, beta, image_size, K,
             #                                                                 Ks, Ts))
             # for i in xrange(batch_size):
             #   seq_batch[i] = output[i]
-            seq_batch = load_kth_data_from_list(train_vids[batchidx],image_size,K,T)
+            seq_batch = load_kth_data_from_list(train_vids,batchidx,image_size,K,T)
+            print seq_batch.shape
             seq_batch_tran = seq_batch.transpose([0,3,1,2,4])
             forward_seq = seq_batch_tran[:,:K,:,:,:]
             backward_seq = seq_batch_tran[:,::-1][:,:K,:,:,:]
@@ -178,7 +178,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
             )
 
             if np.mod(counter, 1000) == 1:
-              seq_batch = load_kth_data_from_list(test_vids[0:batch_size], image_size, K, T)
+              seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T)
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,

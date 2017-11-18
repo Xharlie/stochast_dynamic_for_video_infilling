@@ -110,18 +110,18 @@ def load_kth_data(f_name, data_path, image_size, K, T):
 
   return seq
 
-def load_kth_data_from_list(train_vids_batch, image_size, K, T):
-  seq = np.zeros((len(train_vids_batch), image_size, image_size, 2 * K + T, 1), dtype="float32")
-  for i in range(len(train_vids_batch)):
+def load_kth_data_from_list(train_vids, batchidx, image_size, K, T):
+  seq = np.zeros((len(batchidx), image_size, image_size, 2 * K + T, 1), dtype="float32")
+  for i in range(len(batchidx)):
     flip = np.random.binomial(1,.5,1)[0]
     low = 0
-    high = train_vids_batch[i]- 2 * K - T + 1
+    high = train_vids[batchidx[i]].shape[2]- 2 * K - T + 1
     if low == high:
       stidx = 0
     else:
       stidx = np.random.randint(low=low, high=high)
     for t in xrange(2*K+T):
-      seq[i,:,:,t] = transform(train_vids_batch[i][:,:,t,:])
+      seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t,:])
 
     if flip == 1:
       seq = seq[:,::-1]
