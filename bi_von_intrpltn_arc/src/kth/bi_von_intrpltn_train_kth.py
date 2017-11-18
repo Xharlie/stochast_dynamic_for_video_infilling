@@ -13,17 +13,28 @@ from bi_von_model import bi_von_net
 from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K,
-         T, num_iter, gpu, tf_record_dir, color_channel_num, cpu):
-  tf_record_files=glob.glob(tf_record_dir+'*.tfrecords')
-  vids = []
+         T, num_iter, gpu, tf_record_train_dir, tf_record_test_dir, color_channel_num, cpu):
+  tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
+  train_vids = []
   if len(tf_record_files) == 0:
       data_path = "../../../data/KTH/"
       f = open(data_path+"train_data_list_trimmed.txt","r")
       trainfiles = f.readlines()
-      vids = load_save_data.save_kth_data2record(
-          trainfiles, data_path, image_size, tf_record_dir, color_channel_num)
+      train_vids = load_save_data.save_kth_data2record(
+          trainfiles, data_path, image_size, tf_record_train_dir, color_channel_num)
   else:
-      vids = load_save_data.load_kth_records(tf_record_dir)
+      train_vids = load_save_data.load_kth_records(tf_record_train_dir)
+
+  test_vids = []
+  if len(tf_record_files) == 0:
+      data_path = "../../../data/KTH/"
+      f = open(data_path + "test_data_list.txt", "r")
+      trainfiles = f.readlines()
+      test_vids = load_save_data.save_kth_data2record(
+          trainfiles, data_path, image_size, tf_record_test_dir, color_channel_num)
+  else:
+      test_vids = load_save_data.load_kth_records(tf_record_test_dir)
+
   margin = 0.3
   updateD = True
   updateG = True
@@ -92,7 +103,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
     start_time = time.time()
 
     while iters < num_iter:
-        mini_batches = get_minibatches_idx(len(vids), batch_size, shuffle=True)
+        mini_batches = get_minibatches_idx(len(train_vids), batch_size, shuffle=True)
         for _, batchidx in mini_batches:
           if len(batchidx) == batch_size:
             seq_batch = np.zeros((batch_size, image_size, image_size,
@@ -110,7 +121,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
             #                                                                 Ks, Ts))
             # for i in xrange(batch_size):
             #   seq_batch[i] = output[i]
-            seq_batch = vids[batchidx]
+            seq_batch = load_kth_data_from_list(train_vids[batchidx],image_size,K,T)
             seq_batch_tran = seq_batch.transpose([0,3,1,2,4])
             forward_seq = seq_batch_tran[:,:K,:,:,:]
             backward_seq = seq_batch_tran[:,::-1][:,:K,:,:,:]
@@ -163,7 +174,8 @@ def main(lr, batch_size, alpha, beta, image_size, K,
                 % (iters, time.time() - start_time, errD_fake+errD_real,errG)
             )
 
-            if np.mod(counter, 100) == 1:
+            if np.mod(counter, 1000) == 1:
+              seq_batch = load_kth_data_from_list(test_vids[0:batch_size], image_size, K, T)
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
@@ -171,12 +183,12 @@ def main(lr, batch_size, alpha, beta, image_size, K,
                                                    model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})[0]
               samples = samples[0].swapaxes(0,2).swapaxes(1,2)
-              sbatch  = seq_batch[0,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
+              sbatch = seq_batch[0,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
               samples = np.concatenate((samples,sbatch), axis=0)
               print("Saving sample ...")
               save_images(samples[:,:,:,::-1], [2, T],
                           samples_dir+"train_%s.png" % (iters))
-            if np.mod(counter, 500) == 2:
+            if np.mod(counter, 10000) == 2:
               model.save(sess, checkpoint_dir, counter)
 
             iters += 1
@@ -202,8 +214,10 @@ if __name__ == "__main__":
   parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", default="0",
                       help="GPU device id")
   parser.add_argument("--cpu", action="store_true", dest="cpu", help="use cpu only")
-  parser.add_argument("--tf_record_dir", type=str, nargs="?", dest="tf_record_dir",
-                      default="../../../tf_record/KTH/", help="tf_record location")
+  parser.add_argument("--tf_record_train_dir", type=str, nargs="?", dest="tf_record_train_dir",
+                      default="../../../tf_record/KTH/train/", help="tf_record train location")
+  parser.add_argument("--tf_record_test_dir", type=str, nargs="?", dest="tf_record_test_dir",
+                      default="../../../tf_record/KTH/test/", help="tf_record test location")
   parser.add_argument("--color_channel_num", type=int, dest="color_channel_num",
                       default=1, help="number of color channels")
   args = parser.parse_args()

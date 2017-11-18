@@ -110,6 +110,27 @@ def load_kth_data(f_name, data_path, image_size, K, T):
 
   return seq
 
+def load_kth_data_from_list(train_vids_batch, image_size, K, T):
+  seq = np.zeros((len(train_vids_batch), image_size, image_size, 2 * K + T, 1), dtype="float32")
+  for i in range(len(train_vids_batch)):
+    flip = np.random.binomial(1,.5,1)[0]
+    low = 0
+    high = train_vids_batch[i]- 2 * K - T + 1
+    if low == high:
+      stidx = 0
+    else:
+      stidx = np.random.randint(low=low, high=high)
+    for t in xrange(2*K+T):
+      img = cv2.cvtColor(cv2.resize(train_vids_batch[i].get_data(stidx+t),
+                         (image_size,image_size)),
+                         cv2.COLOR_RGB2GRAY)
+      seq[i,:,:,t] = transform(img[:,:,None])
+
+    if flip == 1:
+      seq = seq[:,::-1]
+
+  return seq
+
 
 def load_s1m_data(f_name, data_path, trainlist, K, T):
   flip = np.random.binomial(1,.5,1)[0]
