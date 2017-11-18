@@ -62,9 +62,11 @@ def main(lr, batch_size, alpha, beta, image_size, K,
   if not exists(summary_dir):
     makedirs(summary_dir)
 
-  device_string="/gpu:%d"%gpu[0]
+  device_string = ""
   if cpu:
       device_string = "/cpu:0"
+  elif gpu:
+      device_string = "/gpu:%d" % gpu[0]
   with tf.device(device_string):
     model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, batch_size=batch_size, T=T,
