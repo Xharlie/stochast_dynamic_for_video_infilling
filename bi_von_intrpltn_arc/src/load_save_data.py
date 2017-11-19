@@ -41,7 +41,7 @@ def save_kth_data2record(tfiles, data_path, image_size, tf_record_dir, channel):
             }
         ))
         writer.write(vids_record.SerializeToString())
-        print "written video{} to {}".format(i, tf_record_dir + tfrecords_filename)
+        print "finish writing video{} to {}".format(i, tf_record_dir + tfrecords_filename)
     writer.close()
     return vids
 
@@ -49,6 +49,7 @@ def load_kth_records(tf_record_dir):
     vids = []
     tf_record_files = glob.glob(tf_record_dir + '*.tfrecords')
     for i in xrange(len(tf_record_files)):
+        print "loading {}".format(tf_record_files[i])
         record_iterator = tf.python_io.tf_record_iterator(path=tf_record_files[i])
         for string_record in record_iterator:
             example = tf.train.Example()
@@ -73,6 +74,7 @@ def load_kth_records(tf_record_dir):
             vid_raw = np.fromstring(vid_string, dtype=np.uint8)
             vid = vid_raw.reshape((height, width, depth, -1))
             vids.append(vid)
+        print "finish {}".format(tf_record_files[i])
     return vids
 
 def _int64_feature(value):

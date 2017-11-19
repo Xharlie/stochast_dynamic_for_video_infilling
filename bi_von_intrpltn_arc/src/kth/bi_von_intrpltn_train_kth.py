@@ -11,8 +11,9 @@ import load_save_data
 from bi_von_model import bi_von_net
 from utils import *
 
-def main(lr, batch_size, alpha, beta, image_size, K,
-         T, num_iter, gpu, cpu, tf_record_train_dir, tf_record_test_dir, color_channel_num):
+def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_pretrain,
+         tf_record_train_dir, tf_record_test_dir, color_channel_num, fea_enc_model,
+                 dyn_enc_model, reference_mode, debug):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
   tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
@@ -70,7 +71,9 @@ def main(lr, batch_size, alpha, beta, image_size, K,
   with tf.device(device_string):
     model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, batch_size=batch_size, T=T,
-                  checkpoint_dir=checkpoint_dir)
+                  checkpoint_dir=checkpoint_dir, fea_enc_model=fea_enc_model,
+                 dyn_enc_model=dyn_enc_model,
+                 debug = debug, reference_mode = reference_mode)
     # for var in tf.trainable_variables():
     #     print var.name
     # raw_input('print trainable variables...')
@@ -78,7 +81,7 @@ def main(lr, batch_size, alpha, beta, image_size, K,
         model.d_loss, var_list=model.d_vars
     )
     g_optim = tf.train.AdamOptimizer(lr, beta1=0.5).minimize(
-        alpha*model.L_img+beta*model.L_GAN, var_list=model.g_vars
+        alpha * model.L_img + beta * model.L_GAN, var_list=model.g_vars
     )
 
   # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
@@ -90,10 +93,11 @@ def main(lr, batch_size, alpha, beta, image_size, K,
 
     tf.global_variables_initializer().run()
 
-    if model.load(sess, checkpoint_dir):
-      print(" [*] Load SUCCESS")
-    else:
-      print(" [!] Load failed...")
+    if load_pretrain:
+        if model.load(sess, checkpoint_dir):
+          print(" [*] Load SUCCESS")
+        else:
+          print(" [!] Load failed...")
 
     g_sum = tf.summary.merge([model.L_p_sum,
                               model.L_gdl_sum, model.loss_sum,
@@ -113,16 +117,6 @@ def main(lr, batch_size, alpha, beta, image_size, K,
             t0 = time.time()
             Ts = np.repeat(np.array([T]),batch_size,axis=0)
             Ks = np.repeat(np.array([K]),batch_size,axis=0)
-            # paths = np.repeat(data_path, batch_size,axis=0)
-            # tfiles = np.array(trainfiles)[batchidx]
-            # shapes = np.repeat(np.array([image_size]),batch_size,axis=0)
-            # output = parallel(delayed(load_kth_data)(f, p,img_sze, k, t)
-            #                                      for f,p,img_sze,k,t in zip(tfiles,
-            #                                                                 paths,
-            #                                                                 shapes,
-            #                                                                 Ks, Ts))
-            # for i in xrange(batch_size):
-            #   seq_batch[i] = output[i]
             seq_batch = load_kth_data_from_list(train_vids,batchidx,image_size,K,T)
             print seq_batch.shape
             seq_batch_tran = seq_batch.transpose([0,3,1,2,4])
@@ -132,8 +126,6 @@ def main(lr, batch_size, alpha, beta, image_size, K,
               _, summary_str = sess.run([d_optim, d_sum],
                                          feed_dict={model.forward_seq: forward_seq,
                                                     model.backward_seq: backward_seq,
-                                                    model.fxt: seq_batch[:,:,:,K-1,:],
-                                                    model.bxt: seq_batch[:,:,:,T+K-1,:],
                                                     model.target: seq_batch})
               writer.add_summary(summary_str, counter)
 
@@ -141,25 +133,17 @@ def main(lr, batch_size, alpha, beta, image_size, K,
               _, summary_str = sess.run([g_optim, g_sum],
                                         feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
-                                                   model.fxt: seq_batch[:, :, :, K - 1, :],
-                                                   model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})
               writer.add_summary(summary_str, counter)
 
             errD_fake = model.d_loss_fake.eval({model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
-                                                   model.fxt: seq_batch[:, :, :, K - 1, :],
-                                                   model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})
             errD_real = model.d_loss_real.eval({model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
-                                                   model.fxt: seq_batch[:, :, :, K - 1, :],
-                                                   model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})
             errG = model.L_GAN.eval({model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
-                                                   model.fxt: seq_batch[:, :, :, K - 1, :],
-                                                   model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})
 
             if errD_fake < margin or errD_real < margin:
@@ -182,15 +166,14 @@ def main(lr, batch_size, alpha, beta, image_size, K,
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
-                                                   model.fxt: seq_batch[:, :, :, K - 1, :],
-                                                   model.bxt: seq_batch[:, :, :, T + K - 1, :],
                                                    model.target: seq_batch})[0]
-              samples = samples[0].swapaxes(0,2).swapaxes(1,2)
-              sbatch = seq_batch[0,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
-              samples = np.concatenate((samples,sbatch), axis=0)
-              print("Saving sample ...")
-              save_images(samples[:,:,:,::-1], [2, T],
-                          samples_dir+"train_%s.png" % (iters))
+              for i in range(5):
+                  samples = samples[i].swapaxes(0,2).swapaxes(1,2)
+                  sbatch = seq_batch[0,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
+                  samples = np.concatenate((samples,sbatch), axis=0)
+                  print("Saving sample ...")
+                  save_images(samples[:,:,:,::-1], [2, T],
+                              samples_dir+"train_%s_%s.png" % (iters, i))
             if np.mod(counter, 10000) == 2:
               model.save(sess, checkpoint_dir, counter)
 
@@ -217,11 +200,20 @@ if __name__ == "__main__":
   parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", default="0",
                       help="GPU device id")
   parser.add_argument("--cpu", action="store_true", dest="cpu", help="use cpu only")
+  parser.add_argument("--load_pretrain", action="store_true", dest="load_pretrain", help="load_pretrain")
   parser.add_argument("--tf_record_train_dir", type=str, nargs="?", dest="tf_record_train_dir",
                       default="../../../tf_record/KTH/train/", help="tf_record train location")
   parser.add_argument("--tf_record_test_dir", type=str, nargs="?", dest="tf_record_test_dir",
                       default="../../../tf_record/KTH/test/", help="tf_record test location")
   parser.add_argument("--color_channel_num", type=int, dest="color_channel_num",
                       default=1, help="number of color channels")
+  parser.add_argument("--fea_enc_model", type=str, dest="fea_enc_model",default="pooling",
+                    help="feature extraction model")
+  parser.add_argument("--dyn_enc_model", type=str, dest="dyn_enc_model", default="mix",
+                      help="dynamic encoding model")
+  parser.add_argument("--reference_mode", type=str, dest="reference_mode", default="two",
+                      help="refer to how many frames in the end")
+  parser.add_argument("--debug", action="store_true", dest="debug", help="debug mode")
+
   args = parser.parse_args()
   main(**vars(args))
