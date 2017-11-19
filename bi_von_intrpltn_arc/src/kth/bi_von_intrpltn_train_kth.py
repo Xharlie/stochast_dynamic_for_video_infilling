@@ -171,11 +171,11 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
                                                    model.backward_seq: backward_seq,
                                                    model.target: seq_batch})[0]
               for i in range(5):
-                  samples = samples[i].swapaxes(0,2).swapaxes(1,2)
-                  sbatch = seq_batch[0,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
-                  samples = np.concatenate((samples,sbatch), axis=0)
+                  sample = samples[i].swapaxes(0,2).swapaxes(1,2)
+                  sbatch = seq_batch[i,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
+                  sample = np.concatenate((sample,sbatch), axis=0)
                   print("Saving sample ...")
-                  save_images(samples[:,:,:,::-1], [2, T],
+                  save_images(sample[:,:,:,::-1], [2, T],
                               samples_dir+"train_%s_%s.png" % (iters, i))
             if np.mod(counter, 10000) == 2:
               model.save(sess, checkpoint_dir, counter)
