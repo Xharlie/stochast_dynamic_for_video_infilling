@@ -166,6 +166,9 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
 
             if np.mod(counter, 1000) == 1:
               seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T)
+              seq_batch_tran = seq_batch.transpose([0, 3, 1, 2, 4])
+              forward_seq = seq_batch_tran[:, :K, :, :, :]
+              backward_seq = seq_batch_tran[:, ::-1][:, :K, :, :, :]
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
