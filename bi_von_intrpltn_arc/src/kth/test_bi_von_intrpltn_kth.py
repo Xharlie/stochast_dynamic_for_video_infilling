@@ -57,10 +57,11 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
                  dyn_enc_model=dyn_enc_model,
                  debug = False, reference_mode = reference_mode)
 
-  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-  with tf.Session(config=tf.ConfigProto(allow_soft_placement=True,
-                                        log_device_placement=False,
-                                        gpu_options=gpu_options)) as sess:
+  # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+  config = tf.ConfigProto(allow_soft_placement=True,
+                          log_device_placement=False)
+  config.gpu_options.allow_growth = True
+  with tf.Session(config=config) as sess:
 
     tf.global_variables_initializer().run()
 
@@ -197,8 +198,7 @@ if __name__ == "__main__":
                       default=10, help="Number of input images")
   parser.add_argument("--T", type=int, dest="T",
                       default=20, help="Number of steps into the future")
-  parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", required=True,
-                      help="GPU device id")
+  parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", default=0 ,help="GPU device id")
   parser.add_argument("--cpu", action="store_true", dest="cpu", help="use cpu only")
 
   parser.add_argument("--tf_record_test_dir", type=str, nargs="?", dest="tf_record_test_dir",
