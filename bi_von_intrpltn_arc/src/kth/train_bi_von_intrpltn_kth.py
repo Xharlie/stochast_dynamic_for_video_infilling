@@ -16,9 +16,11 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
                  dyn_enc_model, reference_mode, debug):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
-  tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
+  train_tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
+  test_tf_record_files=glob.glob(tf_record_test_dir+'*.tfrecords')
+
   train_vids = []
-  if len(tf_record_files) == 0:
+  if len(train_tf_record_files) == 0:
       data_path = "../../../data/KTH/"
       f = open(data_path+"train_data_list_trimmed.txt","r")
       trainfiles = f.readlines()
@@ -28,12 +30,12 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
       train_vids = load_save_data.load_kth_records(tf_record_train_dir)
 
   test_vids = []
-  if len(tf_record_files) == 0:
+  if len(test_tf_record_files) == 0:
       data_path = "../../../data/KTH/"
       f = open(data_path + "test_data_list.txt", "r")
-      trainfiles = f.readlines()
+      testfiles = f.readlines()
       test_vids = load_save_data.save_kth_data2record(
-          trainfiles, data_path, image_size, tf_record_test_dir, color_channel_num)
+          testfiles, data_path, image_size, tf_record_test_dir, color_channel_num)
   else:
       test_vids = load_save_data.load_kth_records(tf_record_test_dir)
 
@@ -121,7 +123,8 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
             Ts = np.repeat(np.array([T]),batch_size,axis=0)
             Ks = np.repeat(np.array([K]),batch_size,axis=0)
             seq_batch = load_kth_data_from_list(train_vids,batchidx,image_size,K,T)
-            print seq_batch.shape
+            if debug:
+                print seq_batch.shape
             seq_batch_tran = seq_batch.transpose([0,3,1,2,4])
             forward_seq = seq_batch_tran[:,:K,:,:,:]
             backward_seq = seq_batch_tran[:,::-1][:,:K,:,:,:]
