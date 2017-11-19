@@ -25,7 +25,7 @@ from utils import *
 
 
 def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_dir, color_channel_num,
-         fea_enc_model, dyn_enc_model, reference_mode):
+         fea_enc_model, dyn_enc_model, reference_mode, gif_per_vid):
   data_path = "../../../data/KTH/"
   f = open(data_path + "test_data_list.txt", "r")
   testfiles = f.readlines()
@@ -51,7 +51,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
   elif gpu:
     device_string = "/gpu:%d" % gpu[0]
   with tf.device(device_string):
-    model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
+    model = bi_von_net(image_size=[image_size,image_size], c_dim=color_channel_num,
                   K=K, batch_size=1, T=T,
                   checkpoint_dir=checkpoint_dir, fea_enc_model=fea_enc_model,
                  dyn_enc_model=dyn_enc_model,
@@ -97,8 +97,11 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
         n_skip = 3
       else:
         n_skip = T
-
-      for j in xrange(int(tokens[1]),int(tokens[2])-2*K-T-1,n_skip):
+      start = int(tokens[1])
+      end = int(tokens[2])-2*K-T-1
+      if gif_per_vid != '-1':
+          end = min(end, max(start + 1, start + (gif_per_vid - 1) * n_skip + 1))
+      for j in xrange(start,end,n_skip):
         print("Video "+str(i)+"/"+str(len(testfiles))+". Index "+str(j)+
               "/"+str(vid.get_length()-T-1))
 
@@ -175,8 +178,8 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
         # Otherwise only the gifs will be kept
         system(cmd1); system(cmd2); #system(cmd3);
 
-        psnr_err = np.concatenate((psnr_err, cpsnr[None,K:]), axis=0)
-        ssim_err = np.concatenate((ssim_err, cssim[None,K:]), axis=0)
+        psnr_err = np.concatenate((psnr_err, cpsnr[None,K:K+T]), axis=0)
+        ssim_err = np.concatenate((ssim_err, cssim[None,K:K+T]), axis=0)
 
     np.savez(save_path, psnr=psnr_err, ssim=ssim_err)
     print("Results saved to "+save_path)
@@ -211,5 +214,7 @@ if __name__ == "__main__":
                       help="dynamic encoding model")
   parser.add_argument("--reference_mode", type=str, dest="reference_mode", default="two",
                       help="refer to how many frames in the end")
+  parser.add_argument("--gif_per_vid", type=int, dest="gif_per_vid", default=1,
+                      help="refer to how many per video")
   args = parser.parse_args()
   main(**vars(args))
