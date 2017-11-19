@@ -24,7 +24,7 @@ from bi_von_model import bi_von_net
 from utils import *
 
 
-def main(lr, batch_size, alpha, beta, image_size, K, T, gpu, tf_record_test_dir, color_channel_num,
+def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_dir, color_channel_num,
          fea_enc_model, dyn_enc_model, reference_mode):
   data_path = "../../../data/KTH/"
   f = open(data_path + "test_data_list.txt", "r")
@@ -45,10 +45,14 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu, tf_record_test_dir,
             + "_beta=" + str(beta)
             + "_lr=" + str(lr))
   checkpoint_dir = "../../models/" + prefix + "/"
-
-  with tf.device("/gpu:%d"%gpu[0]):
+  device_string = ""
+  if cpu:
+    device_string = "/cpu:0"
+  elif gpu:
+    device_string = "/gpu:%d" % gpu[0]
+  with tf.device(device_string):
     model = bi_von_net(image_size=[image_size,image_size], c_dim=1,
-                  K=K, batch_size=batch_size, T=T,
+                  K=K, batch_size=1, T=T,
                   checkpoint_dir=checkpoint_dir, fea_enc_model=fea_enc_model,
                  dyn_enc_model=dyn_enc_model,
                  debug = False, reference_mode = reference_mode)
@@ -195,6 +199,8 @@ if __name__ == "__main__":
                       default=20, help="Number of steps into the future")
   parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", required=True,
                       help="GPU device id")
+  parser.add_argument("--cpu", action="store_true", dest="cpu", help="use cpu only")
+
   parser.add_argument("--tf_record_test_dir", type=str, nargs="?", dest="tf_record_test_dir",
                       default="../../../tf_record/KTH/test/", help="tf_record test location")
   parser.add_argument("--color_channel_num", type=int, dest="color_channel_num",
