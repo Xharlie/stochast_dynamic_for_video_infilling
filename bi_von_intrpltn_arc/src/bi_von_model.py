@@ -232,7 +232,7 @@ class bi_von_net(object):
         deconv3 = relu(deconv3d(deconv2, output_shape=shape3, k_d=3, k_h=3, k_w=3,
                               s_d = self.T / self.K, s_h=1, s_w=1, name='dyn_deconv3', reuse=reuse))
         shape4 = [fea.get_shape().as_list()[0], self.T, deconv3.get_shape().as_list()[3],
-                  deconv3.get_shape().as_list()[3][3], self.gf_dim]
+                  deconv3.get_shape().as_list()[3], self.gf_dim]
         deconv4 = relu(deconv3d(deconv3, output_shape=shape4, k_d=3, k_h=3, k_w=3,
                               s_d = 1, s_h=1, s_w=1, name='dyn_deconv4', reuse=reuse))
         return deconv4
