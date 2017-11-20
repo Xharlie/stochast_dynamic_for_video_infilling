@@ -155,7 +155,7 @@ class bi_von_net(object):
         reuse = False
         res = for_res
         if self.reference_mode == "two":
-            for i in xrange(res):
+            for i in xrange(len(res)):
                 res[i] = tf.concat(axis=3,values=[res[i], back_res[i]])
         for t in xrange(self.T):
             x_hat = self.dec_cnn(self.trans_cnn(dyn_bidrctn[:,t,:,:,:],
@@ -308,17 +308,17 @@ class bi_von_net(object):
             print "dec_cnn comb:{}".format(comb.get_shape().as_list()[1])
             print "dec_cnn stride:{}".format(stride)
         shape1 = [self.batch_size, comb.get_shape().as_list()[1] * stride,
-                  comb.get_shape().as_list()[2] * stride, self.gf_dim * 2]
-        deconv1 = relu(batch_norm(tf.add(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
-                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), res[2]), "dec_bn1",reuse=reuse))
+                  comb.get_shape().as_list()[2] * stride, self.gf_dim * 4]
+        deconv1 = relu(batch_norm(tf.concat([deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
+                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), res[2]],axis=3), "dec_bn1",reuse=reuse))
         shape2 = [self.batch_size, deconv1.get_shape().as_list()[1] * stride,
                   deconv1.get_shape().as_list()[2] * stride, self.gf_dim * 2]
-        deconv2 = relu(batch_norm(tf.add(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
-                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), res[1]), "dec_bn2",reuse=reuse))
+        deconv2 = relu(batch_norm(tf.concat([deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
+                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), res[1]],axis=3), "dec_bn2",reuse=reuse))
         shape3 = [self.batch_size, self.image_size[0],
                   self.image_size[1], self.gf_dim]
-        deconv3 = relu(batch_norm(tf.add(deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
-                       d_h=stride, d_w=stride, name='dec_deconv3', reuse=reuse), res[0]), "dec_bn3",reuse=reuse))
+        deconv3 = relu(batch_norm(tf.concat([deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
+                       d_h=stride, d_w=stride, name='dec_deconv3', reuse=reuse), res[0]],axis=3), "dec_bn3",reuse=reuse))
         shapeout = [self.batch_size, self.image_size[0],
                      self.image_size[1], self.c_dim]
         xtp1 = tanh(deconv2d(deconv3, output_shape=shapeout, k_h=3, k_w=3,
