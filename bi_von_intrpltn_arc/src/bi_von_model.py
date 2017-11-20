@@ -171,8 +171,6 @@ class bi_von_net(object):
         res_in = []
         for k in range(self.K):
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
-            if self.debug:
-                print "atrous_feature_enc, ref_frame:{}".format(ref_frame.get_shape())
             conv1 = relu(atrous_conv2d(ref_frame,
                    output_dim=self.gf_dim, rate=1, name='fea_atrous_conv1', reuse=reuse))
             if k == (self.K-1):
@@ -191,13 +189,12 @@ class bi_von_net(object):
             conv4 = relu(atrous_conv2d(conv3,
                    output_dim=self.gf_dim * 4, rate=8, name='fea_atrous_conv4', reuse=reuse))
             if feature is None:
-                feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 2])
-                if self.debug:
-                    print "atrous_feature_enc, feature reshape:{}".format(feature.get_shape())
+                feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],
+                                          conv4.get_shape().as_list()[3]])
             else:
                 feature=tf.concat([feature,
-                                   tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 2])
-                                   ], 1)
+                                   tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],
+                                                     conv4.get_shape().as_list()[3]])], 1)
             reuse = True
             if self.debug:
                 print "atrous_feature_enc, feature:{}".format(feature.get_shape())
