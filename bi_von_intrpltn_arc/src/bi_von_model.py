@@ -171,6 +171,8 @@ class bi_von_net(object):
         res_in = []
         for k in range(self.K):
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
+            if self.debug:
+                print "atrous_feature_enc, ref_frame:{}".format(feature.get_shape())
             conv1 = relu(atrous_conv2d(ref_frame,
                    output_dim=self.gf_dim, rate=1, name='fea_atrous_conv1', reuse=reuse))
             if k == (self.K-1):
@@ -190,6 +192,8 @@ class bi_von_net(object):
                    output_dim=self.gf_dim * 4, rate=8, name='fea_atrous_conv4', reuse=reuse))
             if feature is None:
                 feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 2])
+                if self.debug:
+                    print "atrous_feature_enc, feature reshape:{}".format(feature.get_shape())
             else:
                 feature=tf.concat([feature,
                                    tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],self.gf_dim * 2])
@@ -222,7 +226,6 @@ class bi_von_net(object):
                 res_in.append(conv2)
 
             pool2 = MaxPooling(conv2, [2, 2])
-
 
             conv3 = relu(conv2d(pool2,
                    output_dim=self.gf_dim * 4, k_h=7, k_w=7, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
