@@ -131,11 +131,11 @@ class bi_von_net(object):
 
         # Forward and backward seq feature extraction
 
-        # forward_feature is batchsize*K*128*128*64
-        forward_feature = self.feature_enc(for_seq, reuse=reuse)
+        # forward_feature is batchsize*K*128*128*64; for_res is residual
+        forward_feature, for_res = self.feature_enc(for_seq, reuse=reuse)
         reuse = True
 
-        backward_feature = self.feature_enc(back_seq, reuse=reuse)
+        backward_feature, back_res = self.feature_enc(back_seq, reuse=reuse)
         # print backward_feature.get_shape()
         # forward and backward seq dynamic 3d convolution:
         # forward_dyn is batchsize*T*128*128*32
@@ -153,9 +153,14 @@ class bi_von_net(object):
         # gen_frames is batchsize*128*128*T*3
         gen_frames = []
         reuse = False
+        res = for_res
+        if self.reference_mode == "two":
+            for i in xrange(res):
+                res[i] = tf.concat(axis=3,values=[res[i], back_res[i]])
         for t in xrange(self.T):
             x_hat = self.dec_cnn(self.trans_cnn(dyn_bidrctn[:,t,:,:,:],
-                        forward_feature[:,-1,:,:,:], backward_feature[:,-1,:,:,:],reuse=reuse),reuse=reuse)
+                                 forward_feature[:,-1,:,:,:], backward_feature[:,-1,:,:,:],reuse=reuse),
+                                 res,reuse=reuse)
             gen_frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
                                            self.image_size[1], 1, self.c_dim]))
             reuse = True
@@ -163,16 +168,23 @@ class bi_von_net(object):
 
     def atrous_feature_enc(self, seq, reuse):
         feature=None
+        res_in = []
         for k in range(self.K):
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
             conv1 = relu(atrous_conv2d(ref_frame,
                    output_dim=self.gf_dim, rate=1, name='fea_atrous_conv1', reuse=reuse))
+            if k == (self.K-1):
+                res_in.append(conv1)
 
             conv2 = relu(atrous_conv2d(conv1,
                    output_dim=self.gf_dim * 2, rate=2, name='fea_atrous_conv2', reuse=reuse))
+            if k == (self.K-1):
+                res_in.append(conv2)
 
             conv3 = relu(atrous_conv2d(conv2,
                    output_dim=self.gf_dim * 2, rate=4, name='fea_atrous_conv3', reuse=reuse))
+            if k == (self.K-1):
+                res_in.append(conv3)
 
             conv4 = relu(atrous_conv2d(conv3,
                    output_dim=self.gf_dim * 4, rate=8, name='fea_atrous_conv4', reuse=reuse))
@@ -185,24 +197,39 @@ class bi_von_net(object):
             reuse = True
             if self.debug:
                 print "atrous_feature_enc, feature:{}".format(feature.get_shape())
-        return feature
+        return feature, res_in
 
 
     def pooling_feature_enc(self, seq, reuse):
         feature=None
+        res_in = []
         for k in range(self.K):
+
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
 
             conv1 = relu(conv2d(ref_frame,
                    output_dim=self.gf_dim, k_h=5, k_w=5, d_h=1, d_w=1, name='fea_conv1', reuse=reuse))
+            # conv1 128*128*32
+            if k == (self.K-1):
+                res_in.append(conv1)
+
             pool1 = MaxPooling(conv1, [2, 2])
 
             conv2 = relu(conv2d(pool1,
                    output_dim=self.gf_dim * 2, k_h=5, k_w=5, d_h=1, d_w=1, name='fea_conv2', reuse=reuse))
+            # conv2 64*64*64
+            if k == (self.K - 1):
+                res_in.append(conv2)
+
             pool2 = MaxPooling(conv2, [2, 2])
+
 
             conv3 = relu(conv2d(pool2,
                    output_dim=self.gf_dim * 4, k_h=7, k_w=7, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
+            # conv3 32*32*128
+            if k == (self.K - 1):
+                res_in.append(conv3)
+
             pool3 = MaxPooling(conv3, [2, 2])
 
             if feature is None:
@@ -216,7 +243,7 @@ class bi_von_net(object):
             reuse = True
         if self.debug:
             print "pooling_feature_enc,feature:{}".format(feature.get_shape())
-        return feature
+        return feature, res_in
 
     def deconv_dynamic_enc(self, fea, reuse=False):
         shape1 = [fea.get_shape().as_list()[0], self.K, fea.get_shape().as_list()[2],
@@ -275,23 +302,23 @@ class bi_von_net(object):
             print "trans_cnn,trans3:{}".format(trans3.get_shape())
         return trans3
 
-    def dec_cnn(self, comb, reuse=False):
+    def dec_cnn(self, comb, res, reuse=False):
         stride = int((self.image_size[0] / float(comb.get_shape().as_list()[1]))**(1/3.))
         if self.debug:
             print "dec_cnn comb:{}".format(comb.get_shape().as_list()[1])
             print "dec_cnn stride:{}".format(stride)
         shape1 = [self.batch_size, comb.get_shape().as_list()[1] * stride,
                   comb.get_shape().as_list()[2] * stride, self.gf_dim * 2]
-        deconv1 = relu(batch_norm(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
-                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), "dec_bn1",reuse=reuse))
+        deconv1 = relu(batch_norm(tf.add(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
+                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), res[2]), "dec_bn1",reuse=reuse))
         shape2 = [self.batch_size, deconv1.get_shape().as_list()[1] * stride,
                   deconv1.get_shape().as_list()[2] * stride, self.gf_dim * 2]
-        deconv2 = relu(batch_norm(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
-                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse),"dec_bn2",reuse=reuse))
+        deconv2 = relu(batch_norm(tf.add(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
+                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), res[1]), "dec_bn2",reuse=reuse))
         shape3 = [self.batch_size, self.image_size[0],
                   self.image_size[1], self.gf_dim]
-        deconv3 = relu(batch_norm(deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
-                       d_h=stride, d_w=stride, name='dec_deconv3', reuse=reuse),"dec_bn3",reuse=reuse))
+        deconv3 = relu(batch_norm(tf.add(deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
+                       d_h=stride, d_w=stride, name='dec_deconv3', reuse=reuse), res[0]), "dec_bn3",reuse=reuse))
         shapeout = [self.batch_size, self.image_size[0],
                      self.image_size[1], self.c_dim]
         xtp1 = tanh(deconv2d(deconv3, output_shape=shapeout, k_h=3, k_w=3,

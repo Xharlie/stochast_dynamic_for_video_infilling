@@ -167,7 +167,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
                 % (iters, time.time() - start_time, errD_fake+errD_real,errG)
             )
 
-            if np.mod(counter, 1000) == 1:
+            if np.mod(counter, 10000) == 1:
               seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T)
               seq_batch_tran = seq_batch.transpose([0, 3, 1, 2, 4])
               forward_seq = seq_batch_tran[:, :K, :, :, :]

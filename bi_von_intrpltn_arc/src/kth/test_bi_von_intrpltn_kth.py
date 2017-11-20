@@ -167,7 +167,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
 
         # Comment out "system(cmd3)" if you want to keep the output images
         # Otherwise only the gifs will be kept
-        system(cmd1); system(cmd2); #system(cmd3);
+        system(cmd1); system(cmd2); system(cmd3);
 
         cmd1 = "rm "+savedir+"/gt.gif"
         cmd2 = ("ffmpeg -f image2 -framerate 7 -i "+savedir+
@@ -176,7 +176,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
 
         # Comment out "system(cmd3)" if you want to keep the output images
         # Otherwise only the gifs will be kept
-        system(cmd1); system(cmd2); #system(cmd3);
+        system(cmd1); system(cmd2); system(cmd3);
 
         psnr_err = np.concatenate((psnr_err, cpsnr[None,K:K+T]), axis=0)
         ssim_err = np.concatenate((ssim_err, cssim[None,K:K+T]), axis=0)
