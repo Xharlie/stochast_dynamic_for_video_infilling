@@ -172,7 +172,7 @@ class bi_von_net(object):
         for k in range(self.K):
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
             if self.debug:
-                print "atrous_feature_enc, ref_frame:{}".format(feature.get_shape())
+                print "atrous_feature_enc, ref_frame:{}".format(ref_frame.get_shape())
             conv1 = relu(atrous_conv2d(ref_frame,
                    output_dim=self.gf_dim, rate=1, name='fea_atrous_conv1', reuse=reuse))
             if k == (self.K-1):
