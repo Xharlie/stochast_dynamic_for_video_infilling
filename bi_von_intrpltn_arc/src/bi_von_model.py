@@ -187,7 +187,7 @@ class bi_von_net(object):
                 res_in.append(conv3)
 
             conv4 = relu(atrous_conv2d(conv3,
-                   output_dim=self.gf_dim * 4, rate=8, name='fea_atrous_conv4', reuse=reuse))
+                   output_dim=self.gf_dim * 2, rate=8, name='fea_atrous_conv4', reuse=reuse))
             if feature is None:
                 feature=tf.reshape(conv4,[-1, 1, self.image_size[0], self.image_size[1],
                                           conv4.get_shape().as_list()[3]])

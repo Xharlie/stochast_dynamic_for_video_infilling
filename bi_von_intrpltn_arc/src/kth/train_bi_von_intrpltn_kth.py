@@ -176,7 +176,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, num_iter, gpu, cpu,load_
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.backward_seq: backward_seq,
                                                    model.target: seq_batch})[0]
-              for i in range(5):
+              for i in range(batch_size / 2):
                   sample = samples[i].swapaxes(0,2).swapaxes(1,2)
                   sbatch = seq_batch[i,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
                   sample = np.concatenate((sample,sbatch), axis=0)
