@@ -27,12 +27,40 @@ def conv2d(input_, output_dim,
      return conv
 
 
+def atrous_conv2d(input_, output_dim,
+           rate=2, stddev=0.02,
+           name="atrous_conv2d", reuse=False, padding='SAME'):
+    with tf.variable_scope(name, reuse=reuse):
+        w = tf.get_variable('w', [rate, rate, input_.get_shape()[-1], output_dim],
+                            initializer=tf.contrib.layers.xavier_initializer())
+        conv = tf.nn.atrous_conv2d(input_, w, rate=rate, padding=padding)
+
+        biases = tf.get_variable('biases', [output_dim],
+                                 initializer=tf.constant_initializer(0.0))
+        conv = tf.reshape(tf.nn.bias_add(conv, biases), conv.get_shape())
+
+        return conv
+
+def conv3d(input_, output_dim,
+           k_d=1, k_h=3, k_w=3, s_d =1, s_h=1, s_w=1, stddev=0.02,
+           name="conv3d", reuse=False, padding='SAME'):
+    with tf.variable_scope(name, reuse=reuse):
+        w = tf.get_variable('w', [k_d, k_h, k_w, input_.get_shape()[-1], output_dim],
+                            initializer=tf.contrib.layers.xavier_initializer())
+        conv = tf.nn.conv3d(input_, w, strides=[1, s_d, s_h, s_w, 1], padding=padding)
+
+        biases = tf.get_variable('biases', [output_dim],
+                                 initializer=tf.constant_initializer(0.0))
+        conv = tf.reshape(tf.nn.bias_add(conv, biases), conv.get_shape())
+
+        return conv
+
 def deconv2d(input_, output_shape,
            k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.02,
            name="deconv2d", reuse=False, with_w=False, padding='SAME'):
   with tf.variable_scope(name, reuse=reuse):
     # filter : [height, width, output_channels, in_channels]
-    w = tf.get_variable('w', [k_h, k_h, output_shape[-1],
+    w = tf.get_variable('w', [k_h, k_w, output_shape[-1],
                               input_.get_shape()[-1]],
                         initializer=tf.contrib.layers.xavier_initializer())
     
@@ -56,6 +84,28 @@ def deconv2d(input_, output_shape,
     else:
       return deconv
 
+
+def deconv3d(input_, output_shape,
+             k_d, k_h=5, k_w=5, s_d = 2, s_h=1, s_w=1, stddev=0.02,
+             name="deconv2d", reuse=False, with_w=False, padding='SAME'):
+    with tf.variable_scope(name, reuse=reuse):
+        # filter : [height, width, output_channels, in_channels]
+        w = tf.get_variable('w', [k_d, k_h, k_w, output_shape[-1],
+                                  input_.get_shape()[-1]],
+                            initializer=tf.contrib.layers.xavier_initializer())
+        deconv = tf.nn.conv3d_transpose(input_, w,
+                                        output_shape=output_shape,
+                                        strides=[1, s_d, s_h, s_w, 1],
+                                        padding=padding)
+
+        biases = tf.get_variable('biases', [output_shape[-1]],
+                                 initializer=tf.constant_initializer(0.0))
+        deconv = tf.reshape(tf.nn.bias_add(deconv, biases), deconv.get_shape())
+
+        if with_w:
+            return deconv, w, biases
+        else:
+            return deconv
 
 def lrelu(x, leak=0.2, name="lrelu"):
   with tf.variable_scope(name):

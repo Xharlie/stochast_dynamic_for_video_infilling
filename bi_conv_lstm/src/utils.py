@@ -6,7 +6,7 @@ import random
 import imageio
 import scipy.misc
 import numpy as np
-
+import os
 
 def transform(image):
     return image/127.5 - 1.
@@ -92,14 +92,14 @@ def load_kth_data(f_name, data_path, image_size, K, T):
   vid_path = data_path + tokens[0] + "_uncomp.avi"
   vid = imageio.get_reader(vid_path,"ffmpeg")
   low = int(tokens[1])
-  high = np.min([int(tokens[2]),vid.get_length()])-K-T+1
+  high = np.min([int(tokens[2]),vid.get_length()])- 2 * K - T + 1
   if low == high:
     stidx = 0 
   else:
     if low >= high: print(vid_path)
     stidx = np.random.randint(low=low, high=high)
-  seq = np.zeros((image_size, image_size, K+T, 1), dtype="float32")
-  for t in xrange(K+T):
+  seq = np.zeros((image_size, image_size, 2*K+T, 1), dtype="float32")
+  for t in xrange(2*K+T):
     img = cv2.cvtColor(cv2.resize(vid.get_data(stidx+t),
                        (image_size,image_size)),
                        cv2.COLOR_RGB2GRAY)
@@ -108,13 +108,25 @@ def load_kth_data(f_name, data_path, image_size, K, T):
   if flip == 1:
     seq = seq[:,::-1]
 
-  diff = np.zeros((image_size, image_size, K-1, 1), dtype="float32")
-  for t in xrange(1,K):
-    prev = inverse_transform(seq[:,:,t-1])
-    next = inverse_transform(seq[:,:,t])
-    diff[:,:,t-1] = next.astype("float32")-prev.astype("float32")
+  return seq
 
-  return seq, diff
+def load_kth_data_from_list(train_vids, batchidx, image_size, K, T):
+  seq = np.zeros((len(batchidx), image_size, image_size, 2 * K + T, 1), dtype="float32")
+  for i in range(len(batchidx)):
+    flip = np.random.binomial(1,.5,1)[0]
+    low = 0
+    high = train_vids[batchidx[i]].shape[2]- 2 * K - T + 1
+    if low == high:
+      stidx = 0
+    else:
+      stidx = np.random.randint(low=low, high=high)
+    for t in xrange(2*K+T):
+      seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t,:])
+
+    if flip == 1:
+      seq = seq[:,::-1]
+
+  return seq
 
 
 def load_s1m_data(f_name, data_path, trainlist, K, T):
@@ -158,3 +170,10 @@ def load_s1m_data(f_name, data_path, trainlist, K, T):
 
   return seq, diff
 
+
+def check_create_dir(dir):
+    try:
+        os.stat(dir)
+    except:
+        os.mkdir(dir)
+    return dir
