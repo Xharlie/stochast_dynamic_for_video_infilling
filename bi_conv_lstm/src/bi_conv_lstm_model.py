@@ -142,10 +142,10 @@ class bi_convlstm_net(object):
     def forward(self, for_seq, seq_in):
         reuse = False
         frames = []
-
+        for_seq = self.pooling_feature_enc(for_seq)
         for i in range(self.convlstm_layer_num):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
-            print for_seq.get_shape().as_list()
+            # print for_seq.get_shape().as_list()
         for t in xrange(self.B * (self.T+self.K) + self.K):
             x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse)
             frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
@@ -153,14 +153,78 @@ class bi_convlstm_net(object):
             reuse = True
         return frames
 
+    def pooling_feature_enc(self, seq, reuse):
+        feature=None
+        res_in = []
+        for k in range(self.K):
+
+            ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
+
+            conv1_1 = relu(conv2d(ref_frame,
+                   output_dim=self.gf_dim, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv1_1', reuse=reuse))
+
+            conv1_2 = relu(conv2d(conv1_1,
+                   output_dim=self.gf_dim, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv1_2', reuse=reuse))
+            # conv1_2 128*128*32
+            if k == (self.K-1):
+                res_in.append(conv1_1)
+
+            conv2_1 = relu(conv2d(conv1_2,
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv2', reuse=reuse))
+            conv2_2 = relu(conv2d(conv2_1,
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv2', reuse=reuse))
+            # conv2_2 64*64*64
+            if k == (self.K - 1):
+                res_in.append(conv2_1)
+
+            conv3_1 = relu(conv2d(conv2_2,
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
+            conv3_2 = relu(conv2d(conv3_1,
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
+            # conv3 32*32*128
+            if k == (self.K - 1):
+                res_in.append(conv3_1)
+
+            if feature is None:
+                feature=tf.reshape(conv3_2,[-1, 1, conv3_2.get_shape().as_list()[1],
+                                            conv3_2.get_shape().as_list()[2], conv3_2.get_shape().as_list()[3]])
+            else:
+                feature=tf.concat([feature,
+                                   tf.reshape(conv3_2,[-1, 1, conv3_2.get_shape().as_list()[1],
+                                        conv3_2.get_shape().as_list()[2], conv3_2.get_shape().as_list()[3]])
+                                   ], 1)
+            reuse = True
+        if self.debug:
+            print "pooling_feature_enc,feature:{}".format(feature.get_shape())
+        return feature, res_in
+
     # def encode_cnn(self, seq, reuse=False):
 
 
-    def dec_cnn(self, feature_map, reuse=False):
-        h0 = lrelu(conv2d(feature_map, self.gf_dim * 2, name='dec_cnn_h0', reuse=reuse,k_h=5, k_w=5, d_h=1, d_w=1))
-        h1 = lrelu(conv2d(h0, self.gf_dim * 2, name='dec_cnn_h1', reuse=reuse,k_h=3, k_w=3, d_h=1, d_w=1))
-        out = tanh(conv2d(h1, self.c_dim, name='dec_cnn_out', reuse=reuse,k_h=3, k_w=3, d_h=1, d_w=1))
-        return out
+    def dec_cnn(self, comb, reuse=False):
+        stride = int((self.image_size[0] / float(comb.get_shape().as_list()[1]))**(1/2.))
+        if self.debug:
+            print "dec_cnn comb:{}".format(comb.get_shape().as_list()[1])
+            print "dec_cnn stride:{}".format(stride)
+        shape1 = [self.batch_size, comb.get_shape().as_list()[1] * stride,
+                  comb.get_shape().as_list()[2] * stride, self.gf_dim * 4]
+        deconv1 = relu(batch_norm(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
+                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), "dec_bn1",reuse=reuse))
+        shape2 = [self.batch_size, deconv1.get_shape().as_list()[1] * stride,
+                  deconv1.get_shape().as_list()[2] * stride, self.gf_dim * 2]
+        deconv2 = relu(batch_norm(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
+                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), "dec_bn2",reuse=reuse))
+        shape3 = [self.batch_size, self.image_size[0],
+                  self.image_size[1], self.gf_dim]
+        deconv3 = relu(batch_norm(deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
+                       d_h=1, d_w=1, name='dec_deconv3', reuse=reuse), "dec_bn3",reuse=reuse))
+        shapeout = [self.batch_size, self.image_size[0],
+                     self.image_size[1], self.c_dim]
+        xtp1 = tanh(deconv2d(deconv3, output_shape=shapeout, k_h=3, k_w=3,
+                             d_h=1, d_w=1, name='dec_deconv_out', reuse=reuse))
+        if self.debug:
+            print "dec_cnn,xtp1:{}".format(xtp1.get_shape())
+        return xtp1
 
 
     def discriminator(self, image):
