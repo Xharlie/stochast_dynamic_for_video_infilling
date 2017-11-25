@@ -178,8 +178,6 @@ def check_create_dir(dir):
         os.mkdir(dir)
     return dir
 
-
-
 def create_missing_frames(seq_batch_tran, K,T):
     for i in range(seq_batch_tran.shape[1]):
       modulus = np.mod(i, K+T)

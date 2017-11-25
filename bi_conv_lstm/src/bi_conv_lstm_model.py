@@ -40,8 +40,10 @@ class bi_convlstm_net(object):
     def build_model(self):
         self.forward_seq=tf.placeholder(tf.float32, self.forward_shape, name='forward_seq')
         self.target = tf.placeholder(tf.float32, self.target_shape, name='target')
+        self.is_gen=tf.placeholder(tf.bool,name="is_gen")
+        self.is_dis=tf.placeholder(tf.bool,name="is_dis")
         # pred: [batch * h * w * 1 * c_dim]
-        pred = self.forward(self.forward_seq, self.target)
+        pred = self.forward(self.forward_seq, self.target,self.is_gen)
         # self.G = tf.transpose(pred, [0, 2, 3, 1, 4])
         # self.G = batch * h * w * t * c_dim
         self.G = tf.concat(axis=3, values=pred)
@@ -80,10 +82,10 @@ class bi_convlstm_net(object):
                 print gen_data.get_shape().as_list()
 
             with tf.variable_scope("DIS", reuse=False):
-                self.D, self.D_logits = self.discriminator(good_data)
+                self.D, self.D_logits = self.discriminator(good_data,self.is_dis)
 
             with tf.variable_scope("DIS", reuse=True):
-                self.D_, self.D_logits_ = self.discriminator(gen_data)
+                self.D_, self.D_logits_ = self.discriminator(gen_data,self.is_dis)
             # pixel level loss
             self.L_p = tf.reduce_mean(
                 tf.square(self.G - self.target[:, :, :, :, :])
@@ -139,7 +141,7 @@ class bi_convlstm_net(object):
 
         return tf.concat(outputs, 4)
 
-    def forward(self, for_seq, seq_in):
+    def forward(self, for_seq, seq_in, is_gen):
         reuse = False
         frames = []
         for_seq, res = self.pooling_feature_enc(for_seq, reuse=reuse)
@@ -147,7 +149,7 @@ class bi_convlstm_net(object):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
             # print for_seq.get_shape().as_list()
         for t in xrange(self.B * (self.T+self.K) + self.K):
-            x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse)
+            x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse, train=is_gen)
             frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
                                                  self.image_size[1], 1, self.c_dim]))
             reuse = True
@@ -201,7 +203,7 @@ class bi_convlstm_net(object):
     # def encode_cnn(self, seq, reuse=False):
 
 
-    def dec_cnn(self, comb, reuse=False):
+    def dec_cnn(self, comb, reuse=False, train=True):
         stride = int((self.image_size[0] / float(comb.get_shape().as_list()[1]))**(1/2.))
         if self.debug:
             print "dec_cnn comb:{}".format(comb.get_shape().as_list()[1])
@@ -209,15 +211,15 @@ class bi_convlstm_net(object):
         shape1 = [self.batch_size, comb.get_shape().as_list()[1] * stride,
                   comb.get_shape().as_list()[2] * stride, self.gf_dim * 4]
         deconv1 = relu(batch_norm(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
-                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), "dec_bn1",reuse=reuse))
+                      d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), "dec_bn1",reuse=reuse,train=train))
         shape2 = [self.batch_size, deconv1.get_shape().as_list()[1] * stride,
                   deconv1.get_shape().as_list()[2] * stride, self.gf_dim * 2]
         deconv2 = relu(batch_norm(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
-                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), "dec_bn2",reuse=reuse))
+                       d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), "dec_bn2",reuse=reuse,train=train))
         shape3 = [self.batch_size, self.image_size[0],
                   self.image_size[1], self.gf_dim]
         deconv3 = relu(batch_norm(deconv2d(deconv2, output_shape=shape3, k_h=3, k_w=3,
-                       d_h=1, d_w=1, name='dec_deconv3', reuse=reuse), "dec_bn3",reuse=reuse))
+                       d_h=1, d_w=1, name='dec_deconv3', reuse=reuse), "dec_bn3",reuse=reuse,train=train))
         shapeout = [self.batch_size, self.image_size[0],
                      self.image_size[1], self.c_dim]
         xtp1 = tanh(deconv2d(deconv3, output_shape=shapeout, k_h=3, k_w=3,
@@ -227,14 +229,14 @@ class bi_convlstm_net(object):
         return xtp1
 
 
-    def discriminator(self, image):
+    def discriminator(self, image, train=True):
         h0 = lrelu(conv2d(image, self.df_dim, name='dis_h0_conv'))
         h1 = lrelu(batch_norm(conv2d(h0, self.df_dim * 2, name='dis_h1_conv'),
-                              "bn1"))
+                              "bn1",train=train))
         h2 = lrelu(batch_norm(conv2d(h1, self.df_dim * 4, name='dis_h2_conv'),
-                              "bn2"))
+                              "bn2",train=train))
         h3 = lrelu(batch_norm(conv2d(h2, self.df_dim * 8, name='dis_h3_conv'),
-                              "bn3"))
+                              "bn3",train=train))
         h = linear(tf.reshape(h3, [self.batch_size, -1]), 1, 'dis_h3_lin')
 
         return tf.nn.sigmoid(h), h

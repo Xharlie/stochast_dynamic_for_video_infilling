@@ -130,21 +130,31 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             if updateD:
               _, summary_str = sess.run([d_optim, d_sum],
                                          feed_dict={model.forward_seq: forward_seq,
-                                                    model.target: seq_batch})
+                                                    model.target: seq_batch,
+                                                    model.is_dis:True,
+                                                    model.is_gen:False})
               writer.add_summary(summary_str, counter)
 
             if updateG:
               _, summary_str = sess.run([g_optim, g_sum],
                                         feed_dict={model.forward_seq: forward_seq,
-                                                   model.target: seq_batch})
+                                                   model.target: seq_batch,
+                                                    model.is_dis:False,
+                                                    model.is_gen:True})
               writer.add_summary(summary_str, counter)
 
             errD_fake = model.d_loss_fake.eval({model.forward_seq: forward_seq,
-                                                   model.target: seq_batch})
+                                                   model.target: seq_batch,
+                                                    model.is_dis:False,
+                                                    model.is_gen:False})
             errD_real = model.d_loss_real.eval({model.forward_seq: forward_seq,
-                                                   model.target: seq_batch})
+                                                   model.target: seq_batch,
+                                                    model.is_dis:False,
+                                                    model.is_gen:False})
             errG = model.L_GAN.eval({model.forward_seq: forward_seq,
-                                                   model.target: seq_batch})
+                                                   model.target: seq_batch,
+                                                    model.is_dis:False,
+                                                    model.is_gen:False})
 
             if errD_fake < margin or errD_real < margin:
               updateD = False
@@ -167,7 +177,9 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
               forward_seq = seq_batch_tran
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
-                                                   model.target: seq_batch})[0]
+                                                   model.target: seq_batch,
+                                                    model.is_dis:False,
+                                                    model.is_gen:False})[0]
               for i in range(batch_size / 2):
                   sample = samples[i].swapaxes(0,2).swapaxes(1,2)
                   sbatch = seq_batch[i,:,:,:].swapaxes(0,2).swapaxes(1,2)
