@@ -142,7 +142,7 @@ class bi_convlstm_net(object):
     def forward(self, for_seq, seq_in):
         reuse = False
         frames = []
-        for_seq = self.pooling_feature_enc(for_seq)
+        for_seq = self.pooling_feature_enc(for_seq, reuse=reuse)
         for i in range(self.convlstm_layer_num):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
             # print for_seq.get_shape().as_list()
