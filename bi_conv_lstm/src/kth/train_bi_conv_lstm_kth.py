@@ -74,7 +74,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
   if cpu:
       device_string = "/cpu:0"
   elif gpu:
-      device_string = "/gpu:%d" % gpu
+      device_string = "/gpu:%d" % gpu[0]
   with tf.device(device_string):
     model = bi_convlstm_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, T=T, B=B, convlstm_layer_num=convlstm_layer_num, batch_size=batch_size,
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                       default=3, help="number of convlstm layers")
   parser.add_argument("--num_iter", type=int, dest="num_iter",
                       default=100000, help="Number of iterations")
-  parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", default="0",
+  parser.add_argument("--gpu", type=int, nargs="+", dest="gpu", default=0,
                       help="GPU device id")
   parser.add_argument("--cpu", action="store_true", dest="cpu", help="use cpu only")
   parser.add_argument("--load_pretrain", action="store_true", dest="load_pretrain", help="load_pretrain")

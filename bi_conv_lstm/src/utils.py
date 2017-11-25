@@ -128,7 +128,7 @@ def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B, flipable=
         stidx = np.random.randint(low=low, high=high)
       break
     for t in xrange(length):
-      seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t+stidx,:])
+      seq[i,:,:,t] = transform(selected[:,:,t+stidx,:])
 
     if flipable:
       flip = np.random.binomial(1,.5,1)[0]
