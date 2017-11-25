@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-from convlstm_cell import ConvLSTMCell
+from convlstm_cell import ConvGRUCell
 from ops import *
 from utils import *
 
@@ -39,10 +39,9 @@ class bi_convlstm_net(object):
 
     def build_model(self):
         self.forward_seq=tf.placeholder(tf.float32, self.forward_shape, name='forward_seq')
-        self.backward_seq=tf.placeholder(tf.float32, self.backward_shape, name='backward_seq')
         self.target = tf.placeholder(tf.float32, self.target_shape, name='target')
         # pred: [batch * h * w * 1 * c_dim]
-        pred = self.forward(self.forward_seq, self.backward_seq, self.target)
+        pred = self.forward(self.forward_seq, self.target)
         # self.G = tf.transpose(pred, [0, 2, 3, 1, 4])
         # self.G = batch * h * w * t * c_dim
         self.G = tf.concat(axis=3, values=pred)
@@ -127,26 +126,24 @@ class bi_convlstm_net(object):
             print("Number of parameters: %d" % num_param)
         self.saver = tf.train.Saver(max_to_keep=10)
 
-    def convlstm_seq_op(self, unit_index, for_seq, back_seq, reuse=False):
-        shape = for_seq.get_shape().as_list()[2:4]
+    def convRnn_seq_op(self, unit_index, seq, reuse=False):
+        shape = seq.get_shape().as_list()[2:4]
         with tf.name_scope("for_convlstm"):
-            with tf.variable_scope('for_convlstm_' + str(unit_index), reuse=reuse):
-                for_cell = ConvLSTMCell(shape, self.gf_dim, self.convlstm_kernel)
-                for_seq, state = tf.nn.dynamic_rnn(for_cell, for_seq, dtype=for_seq.dtype)
+            with tf.variable_scope('for_convRnn_' + str(unit_index), reuse=reuse):
+                for_cell = ConvGRUCell(shape, self.gf_dim, self.convlstm_kernel)
         with tf.name_scope("back_convlstm"):
-            with tf.variable_scope('back_convlstm_' + str(unit_index), reuse=reuse):
-                back_cell = ConvLSTMCell(shape, self.gf_dim, self.convlstm_kernel)
-                back_seq, state = tf.nn.dynamic_rnn(back_cell, back_seq, dtype=back_seq.dtype)
-        with tf.name_scope("combine_convlstm"):
-            for_seq = tf.concat([for_seq, tf.reverse(back_seq, [1])], 4)
-            back_seq = tf.reverse(for_seq, [1])
-        return for_seq, back_seq
+            with tf.variable_scope('back_convRnn_' + str(unit_index), reuse=reuse):
+                back_cell = ConvGRUCell(shape, self.gf_dim, self.convlstm_kernel)
+        outputs, state = tf.nn.bidirectional_dynamic_rnn(for_cell, back_cell, seq, dtype=seq.dtype)
 
-    def forward(self, for_seq, back_seq, seq_in):
+        return tf.concat(outputs, 2)
+
+    def forward(self, for_seq, seq_in):
         reuse = False
-        frames=[]
+        frames = []
+
         for i in range(self.convlstm_layer_num):
-            for_seq, back_seq = self.convlstm_seq_op(i, for_seq, back_seq, reuse=reuse)
+            for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
 
         for t in xrange(self.B * (self.T+self.K) + self.K):
             x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse)
@@ -154,6 +151,9 @@ class bi_convlstm_net(object):
                                                  self.image_size[1], 1, self.c_dim]))
             reuse = True
         return frames
+
+    # def encode_cnn(self, seq, reuse=False):
+
 
     def dec_cnn(self, feature_map, reuse=False):
         h0 = lrelu(conv2d(feature_map, self.gf_dim * 2, name='dec_cnn_h0', reuse=reuse,k_h=5, k_w=5, d_h=1, d_w=1))
