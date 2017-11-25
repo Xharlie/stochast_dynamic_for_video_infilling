@@ -142,7 +142,7 @@ class bi_convlstm_net(object):
     def forward(self, for_seq, seq_in):
         reuse = False
         frames = []
-        for_seq = self.pooling_feature_enc(for_seq, reuse=reuse)
+        for_seq, res = self.pooling_feature_enc(for_seq, reuse=reuse)
         for i in range(self.convlstm_layer_num):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
             # print for_seq.get_shape().as_list()
@@ -156,8 +156,8 @@ class bi_convlstm_net(object):
     def pooling_feature_enc(self, seq, reuse):
         feature=None
         res_in = []
-        for k in range(self.K):
-
+        length = seq.get_shape().as_list()[1]
+        for k in range(length):
             ref_frame = tf.reshape(seq[:, k, :, :, :],[-1, self.image_size[0], self.image_size[1],self.c_dim])
 
             conv1_1 = relu(conv2d(ref_frame,
@@ -166,7 +166,7 @@ class bi_convlstm_net(object):
             conv1_2 = relu(conv2d(conv1_1,
                    output_dim=self.gf_dim, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv1_2', reuse=reuse))
             # conv1_2 128*128*32
-            if k == (self.K-1):
+            if k == (length-1):
                 res_in.append(conv1_1)
 
             conv2_1 = relu(conv2d(conv1_2,
@@ -174,7 +174,7 @@ class bi_convlstm_net(object):
             conv2_2 = relu(conv2d(conv2_1,
                    output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv2_2', reuse=reuse))
             # conv2_2 64*64*64
-            if k == (self.K - 1):
+            if k == (length - 1):
                 res_in.append(conv2_1)
 
             conv3_1 = relu(conv2d(conv2_2,
@@ -182,7 +182,7 @@ class bi_convlstm_net(object):
             conv3_2 = relu(conv2d(conv3_1,
                    output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3_2', reuse=reuse))
             # conv3 32*32*128
-            if k == (self.K - 1):
+            if k == (length - 1):
                 res_in.append(conv3_1)
 
             if feature is None:
