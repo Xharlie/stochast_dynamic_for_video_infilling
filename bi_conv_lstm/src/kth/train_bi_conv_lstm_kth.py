@@ -164,14 +164,13 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             if np.mod(counter, 10000) == 1:
               seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T)
               seq_batch_tran = seq_batch.transpose([0, 3, 1, 2, 4])
-              forward_seq = seq_batch_tran[:, :K, :, :, :]
-              backward_seq = seq_batch_tran[:, ::-1][:, :K, :, :, :]
+              forward_seq = seq_batch_tran
               samples = sess.run([model.G],
                                   feed_dict={model.forward_seq: forward_seq,
                                                    model.target: seq_batch})[0]
               for i in range(batch_size / 2):
                   sample = samples[i].swapaxes(0,2).swapaxes(1,2)
-                  sbatch = seq_batch[i,:,:,K:K+T].swapaxes(0,2).swapaxes(1,2)
+                  sbatch = seq_batch[i,:,:,:].swapaxes(0,2).swapaxes(1,2)
                   sample = np.concatenate((sample,sbatch), axis=0)
                   print("Saving sample ...")
                   save_images(sample[:,:,:,::-1], [2, T],

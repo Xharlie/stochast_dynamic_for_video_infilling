@@ -134,9 +134,10 @@ class bi_convlstm_net(object):
         with tf.name_scope("back_convlstm"):
             with tf.variable_scope('back_convRnn_' + str(unit_index), reuse=reuse):
                 back_cell = ConvGRUCell(shape, self.gf_dim, self.convlstm_kernel)
-        outputs, state = tf.nn.bidirectional_dynamic_rnn(for_cell, back_cell, seq, dtype=seq.dtype)
+        with tf.variable_scope('bidirection_rnn_' + str(unit_index), reuse=reuse):
+            outputs, state = tf.nn.bidirectional_dynamic_rnn(for_cell, back_cell, seq, dtype=seq.dtype)
 
-        return tf.concat(outputs, 2)
+        return tf.concat(outputs, 4)
 
     def forward(self, for_seq, seq_in):
         reuse = False
@@ -144,7 +145,7 @@ class bi_convlstm_net(object):
 
         for i in range(self.convlstm_layer_num):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
-
+            print for_seq.get_shape().as_list()
         for t in xrange(self.B * (self.T+self.K) + self.K):
             x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse)
             frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
