@@ -170,17 +170,17 @@ class bi_convlstm_net(object):
                 res_in.append(conv1_1)
 
             conv2_1 = relu(conv2d(conv1_2,
-                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv2', reuse=reuse))
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv2_1', reuse=reuse))
             conv2_2 = relu(conv2d(conv2_1,
-                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv2', reuse=reuse))
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=2, d_w=2, name='fea_conv2_2', reuse=reuse))
             # conv2_2 64*64*64
             if k == (self.K - 1):
                 res_in.append(conv2_1)
 
             conv3_1 = relu(conv2d(conv2_2,
-                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3_1', reuse=reuse))
             conv3_2 = relu(conv2d(conv3_1,
-                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3', reuse=reuse))
+                   output_dim=self.gf_dim * 2, k_h=3, k_w=3, d_h=1, d_w=1, name='fea_conv3_2', reuse=reuse))
             # conv3 32*32*128
             if k == (self.K - 1):
                 res_in.append(conv3_1)
