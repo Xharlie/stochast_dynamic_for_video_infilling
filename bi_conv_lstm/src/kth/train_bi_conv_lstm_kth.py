@@ -49,9 +49,9 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
           + "_T="+str(T)
           + "_B="+str(B)
           + "_convlstm_layer_num="+str(convlstm_layer_num)
-          + "_fea_enc_model="+str(fea_enc_model)
-          + "_dyn_enc_model="+str(dyn_enc_model)
-          + "_reference_mode="+str(reference_mode)
+          # + "_fea_enc_model="+str(fea_enc_model)
+          # + "_dyn_enc_model="+str(dyn_enc_model)
+          # + "_reference_mode="+str(reference_mode)
           + "_batch_size="+str(batch_size)
           + "_alpha="+str(alpha)
           + "_beta="+str(beta)
@@ -74,7 +74,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
   if cpu:
       device_string = "/cpu:0"
   elif gpu:
-      device_string = "/gpu:%d" % gpu[0]
+      device_string = "/gpu:%d" % gpu
   with tf.device(device_string):
     model = bi_convlstm_net(image_size=[image_size,image_size], c_dim=1,
                   K=K, T=T, B=B, convlstm_layer_num=convlstm_layer_num, batch_size=batch_size,
@@ -172,7 +172,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             )
 
             if np.mod(counter, 10000) == 1:
-              seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T)
+              seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T, B)
               seq_batch_tran = seq_batch.transpose([0, 3, 1, 2, 4])
               forward_seq = seq_batch_tran
               samples = sess.run([model.G],

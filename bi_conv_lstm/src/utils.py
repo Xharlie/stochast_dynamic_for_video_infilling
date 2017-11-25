@@ -110,23 +110,32 @@ def load_kth_data(f_name, data_path, image_size, K, T):
 
   return seq
 
-def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B):
+def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B, flipable=True):
   length = B * (K + T) + K
   seq = np.zeros((len(batchidx), image_size, image_size, length, 1), dtype="float32")
   for i in range(len(batchidx)):
-    flip = np.random.binomial(1,.5,1)[0]
-    low = 0
-    high = train_vids[batchidx[i]].shape[2]- length + 1
-    if low == high:
-      stidx = 0
-    else:
-      stidx = np.random.randint(low=low, high=high)
+    stidx = 0
+    selected = train_vids[batchidx[i]]
+    while True:
+      low = 0
+      high = selected.shape[2]- length
+      if low == high:
+        stidx = 0
+      elif high < 0:
+        selected = train_vids[np.random.randint(low=0, high=len(train_vids))]
+        continue
+      else:
+        stidx = np.random.randint(low=low, high=high)
+      break
     for t in xrange(length):
-      seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t,:])
+      seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t+stidx,:])
 
+    if flipable:
+      flip = np.random.binomial(1,.5,1)[0]
+    else:
+      flip = 0
     if flip == 1:
       seq = seq[:,::-1]
-
   return seq
 
 def load_s1m_data(f_name, data_path, trainlist, K, T):
