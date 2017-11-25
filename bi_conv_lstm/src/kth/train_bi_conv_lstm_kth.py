@@ -43,7 +43,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
   updateD = True
   updateG = True
   iters = 0
-  prefix  = ("KTH_lstr"
+  prefix  = ("KTH_convlstm"
           + "_image_size="+str(image_size)
           + "_K="+str(K)
           + "_T="+str(T)

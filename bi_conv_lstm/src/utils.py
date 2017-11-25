@@ -110,24 +110,24 @@ def load_kth_data(f_name, data_path, image_size, K, T):
 
   return seq
 
-def load_kth_data_from_list(train_vids, batchidx, image_size, K, T):
-  seq = np.zeros((len(batchidx), image_size, image_size, 2 * K + T, 1), dtype="float32")
+def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B):
+  length = B * (K + T) + K
+  seq = np.zeros((len(batchidx), image_size, image_size, length, 1), dtype="float32")
   for i in range(len(batchidx)):
     flip = np.random.binomial(1,.5,1)[0]
     low = 0
-    high = train_vids[batchidx[i]].shape[2]- 2 * K - T + 1
+    high = train_vids[batchidx[i]].shape[2]- length + 1
     if low == high:
       stidx = 0
     else:
       stidx = np.random.randint(low=low, high=high)
-    for t in xrange(2*K+T):
+    for t in xrange(length):
       seq[i,:,:,t] = transform(train_vids[batchidx[i]][:,:,t,:])
 
     if flip == 1:
       seq = seq[:,::-1]
 
   return seq
-
 
 def load_s1m_data(f_name, data_path, trainlist, K, T):
   flip = np.random.binomial(1,.5,1)[0]
@@ -177,3 +177,12 @@ def check_create_dir(dir):
     except:
         os.mkdir(dir)
     return dir
+
+
+
+def create_missing_frames(seq_batch_tran, K,T):
+    for i in range(seq_batch_tran.shape[1]):
+      modulus = np.mod(i, K+T)
+      if modulus < K:
+        seq_batch_tran[:,i,:,:,:] = np.zeros_like(seq_batch_tran[:,i,:,:,:])
+    return seq_batch_tran

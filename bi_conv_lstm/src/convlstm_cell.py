@@ -1,5 +1,4 @@
 import tensorflow as tf
-from convlstm_cell import ConvLSTMCell
 
 class ConvLSTMCell(tf.nn.rnn_cell.RNNCell):
   """A LSTM cell with convolutions instead of multiplications.

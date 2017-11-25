@@ -25,10 +25,10 @@ class bi_convlstm_net(object):
         self.T = T
         self.B = B
         self.convlstm_layer_num = convlstm_layer_num
-        self.forward_shape = [batch_size, (B+1)*K, self.image_size[0],
+        self.forward_shape = [batch_size, B*(K+T)+K, self.image_size[0],
                            self.image_size[1], c_dim]
 
-        self.backward_shape = [batch_size, (B+1)*K, self.image_size[0],
+        self.backward_shape = [batch_size, B*(K+T)+K, self.image_size[0],
                            self.image_size[1], c_dim]
 
         self.xt_shape = [batch_size, self.image_size[0], self.image_size[1], c_dim]
@@ -41,9 +41,11 @@ class bi_convlstm_net(object):
         self.forward_seq=tf.placeholder(tf.float32, self.forward_shape, name='forward_seq')
         self.backward_seq=tf.placeholder(tf.float32, self.backward_shape, name='backward_seq')
         self.target = tf.placeholder(tf.float32, self.target_shape, name='target')
+        # pred: [batch * h * w * 1 * c_dim]
         pred = self.forward(self.forward_seq, self.backward_seq, self.target)
-        self.G = tf.transpose(pred, [0, 2, 3, 1, 4])
-        # self.G = tf.concat(axis=3, values=pred)
+        # self.G = tf.transpose(pred, [0, 2, 3, 1, 4])
+        # self.G = batch * h * w * t * c_dim
+        self.G = tf.concat(axis=3, values=pred)
         if self.is_train:
             true_sim = inverse_transform(self.target[:, :, :, :, :])
             # change 1 channel by replicate to 3 channels
@@ -65,14 +67,18 @@ class bi_convlstm_net(object):
             # binput_b = tf.reshape(self.target[:, :, :, self.K + self.T:, :],
             #                       [self.batch_size, self.image_size[0],
             #                        self.image_size[1], -1])
-            btarget = tf.reshape(self.target[:, :, :, :, :],
+            btarget = tf.reshape(self.target,
                                  [self.batch_size, self.image_size[0],
                                   self.image_size[1], -1])
+
             bgen = tf.reshape(self.G, [self.batch_size,
                                        self.image_size[0],
                                        self.image_size[1], -1])
             good_data = btarget
             gen_data = bgen
+            if self.debug:
+                print good_data.get_shape().as_list()
+                print gen_data.get_shape().as_list()
 
             with tf.variable_scope("DIS", reuse=False):
                 self.D, self.D_logits = self.discriminator(good_data)
@@ -127,7 +133,7 @@ class bi_convlstm_net(object):
             with tf.variable_scope('for_convlstm_' + str(unit_index), reuse=reuse):
                 for_cell = ConvLSTMCell(shape, self.gf_dim, self.convlstm_kernel)
                 for_seq, state = tf.nn.dynamic_rnn(for_cell, for_seq, dtype=for_seq.dtype)
-        with tf.name_scope("'back_convlstm"):
+        with tf.name_scope("back_convlstm"):
             with tf.variable_scope('back_convlstm_' + str(unit_index), reuse=reuse):
                 back_cell = ConvLSTMCell(shape, self.gf_dim, self.convlstm_kernel)
                 back_seq, state = tf.nn.dynamic_rnn(back_cell, back_seq, dtype=back_seq.dtype)
@@ -138,11 +144,23 @@ class bi_convlstm_net(object):
 
     def forward(self, for_seq, back_seq, seq_in):
         reuse = False
-
+        frames=[]
         for i in range(self.convlstm_layer_num):
             for_seq, back_seq = self.convlstm_seq_op(i, for_seq, back_seq, reuse=reuse)
 
-        return for_seq
+        for t in xrange(self.B * (self.T+self.K) + self.K):
+            x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse)
+            frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
+                                                 self.image_size[1], 1, self.c_dim]))
+            reuse = True
+        return frames
+
+    def dec_cnn(self, feature_map, reuse=False):
+        h0 = lrelu(conv2d(feature_map, self.gf_dim * 2, name='dec_cnn_h0', reuse=reuse,k_h=5, k_w=5, d_h=1, d_w=1))
+        h1 = lrelu(conv2d(h0, self.gf_dim * 2, name='dec_cnn_h1', reuse=reuse,k_h=3, k_w=3, d_h=1, d_w=1))
+        out = tanh(conv2d(h1, self.c_dim, name='dec_cnn_out', reuse=reuse,k_h=3, k_w=3, d_h=1, d_w=1))
+        return out
+
 
     def discriminator(self, image):
         h0 = lrelu(conv2d(image, self.df_dim, name='dis_h0_conv'))
@@ -157,7 +175,7 @@ class bi_convlstm_net(object):
         return tf.nn.sigmoid(h), h
 
     def save(self, sess, checkpoint_dir, step):
-        model_name = "MCNET.model"
+        model_name = "bi_conv_lstm.model"
 
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
