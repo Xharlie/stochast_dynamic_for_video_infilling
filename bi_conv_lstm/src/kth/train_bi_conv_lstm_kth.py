@@ -13,7 +13,7 @@ from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu,load_pretrain,
          tf_record_train_dir, tf_record_test_dir, color_channel_num, fea_enc_model,
-                 dyn_enc_model, reference_mode, debug):
+                 dyn_enc_model, reference_mode, debug, print_train_instead):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
   train_tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
@@ -172,20 +172,23 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             )
 
             if np.mod(counter, 10000) == 1:
-              seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T, B)
+              if print_train_instead:
+                seq_batch = load_kth_data_from_list(train_vids, range(batch_size), image_size, K, T, B, flipable=False)
+              else:
+                seq_batch = load_kth_data_from_list(test_vids, range(batch_size), image_size, K, T, B,flipable=False)
               seq_batch_tran = seq_batch.transpose([0, 3, 1, 2, 4])
               forward_seq = seq_batch_tran
               samples = sess.run([model.G],
-                                  feed_dict={model.forward_seq: forward_seq,
-                                                   model.target: seq_batch,
-                                                    model.is_dis:False,
-                                                    model.is_gen:False})[0]
+                              feed_dict={model.forward_seq: forward_seq,
+                                               model.target: seq_batch,
+                                                model.is_dis:False,
+                                                model.is_gen:False})[0]
               for i in range(batch_size / 2):
                   sample = samples[i].swapaxes(0,2).swapaxes(1,2)
                   sbatch = seq_batch[i,:,:,:].swapaxes(0,2).swapaxes(1,2)
                   sample = np.concatenate((sample,sbatch), axis=0)
                   print("Saving sample ...")
-                  save_images(sample[:,:,:,::-1], [2, T],
+                  save_images(sample[:,:,:,::-1], [2, B*(K+T)+K],
                               samples_dir+"train_%s_%s.png" % (iters, i))
             if np.mod(counter, 10000) == 2:
               model.save(sess, checkpoint_dir, counter)
@@ -231,6 +234,8 @@ if __name__ == "__main__":
   parser.add_argument("--reference_mode", type=str, dest="reference_mode", default="two",
                       help="refer to how many frames in the end")
   parser.add_argument("--debug", action="store_true", dest="debug", help="debug mode")
+  parser.add_argument("--print_train_instead", action="store_true",
+                      dest="print_train_instead", help="print_train_instead of test")
 
   args = parser.parse_args()
   main(**vars(args))
