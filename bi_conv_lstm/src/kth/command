@@ -1,17 +1,12 @@
 train:
 
-nohup python train_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 5 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model mix --reference_mode two &> train.5.5.pooling.mix.two.100000 &
+nohup python -u train_bi_conv_lstm_kth.py  --gpu=0  --batch_size=8 --K 1 --T 3 --B 5 --alpha=1.0 --beta=0.02 &> train.1.3.5.batch8.100000 &
 
-nohup python train_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 5 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model mix --reference_mode one &> train.5.5.pooling.mix.one.100000 &
-
-nohup python train_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 5 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model deconv --reference_mode one &> train.5.5.pooling.deconv.one.100000 &
-
-nohup python train_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 10 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model mix --reference_mode two &> train.5.10.pooling.mix.two.100000 &
-
-nohup python train_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 10 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model mix --reference_mode one &> train.5.10.pooling.mix.one.100000 &
+nohup python -u train_bi_conv_lstm_kth.py  --gpu=0  --batch_size=8 --K 1 --T 3 --B 4 --alpha=1.0 --beta=0.02 --print_train_instead --convlstm_layer_num 1 &> train.1.3.4.batch8.100000 &
 
 test:
 
-python test_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=8 --K 5 --T 10 --alpha=1.0 --beta=0.02 --fea_enc_model pooling --dyn_enc_model mix --reference_mode two --gif_per_vid 1
 
-python test_bi_von_intrpltn_kth.py  --gpu=0  --batch_size=4 --K 5 --T 10 --alpha=1.0 --beta=0.02 --fea_enc_model atrous --dyn_enc_model mix --reference_mode two --gif_per_vid 1
+python -u test_bi_conv_lstm_kth.py  --cpu --batch_size=8 --K 1 --T 3 --B 5 --alpha=1.0 --beta=0.02
+
+python -u test_bi_conv_lstm_kth.py  --cpu --batch_size=8 --K 1 --T 3 --B 4 --alpha=1.0 --beta=0.05 --convlstm_layer_num 1

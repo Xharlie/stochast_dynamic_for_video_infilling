@@ -190,6 +190,6 @@ def check_create_dir(dir):
 def create_missing_frames(seq_batch_tran, K,T):
     for i in range(seq_batch_tran.shape[1]):
       modulus = np.mod(i, K+T)
-      if modulus < K:
+      if modulus >= K:
         seq_batch_tran[:,i,:,:,:] = np.zeros_like(seq_batch_tran[:,i,:,:,:])
     return seq_batch_tran

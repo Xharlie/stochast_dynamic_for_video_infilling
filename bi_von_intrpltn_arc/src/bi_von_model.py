@@ -47,6 +47,7 @@ class bi_von_net(object):
         self.backward_seq=tf.placeholder(tf.float32, self.backward_shape, name='backward_seq')
         self.target = tf.placeholder(tf.float32, self.target_shape, name='target')
         pred = self.forward(self.forward_seq, self.backward_seq, self.target)
+        # G batch_size * x * y * t * c
         self.G = tf.concat(axis=3, values=pred)
         if self.is_train:
             true_sim = inverse_transform(self.target[:, :, :, self.K:self.K + self.T, :])

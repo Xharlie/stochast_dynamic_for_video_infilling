@@ -24,9 +24,9 @@ from bi_conv_lstm_model import bi_convlstm_net
 from utils import *
 
 
-def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu,load_pretrain,
+def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu, load_pretrain,
          tf_record_train_dir, tf_record_test_dir, color_channel_num, fea_enc_model,
-                 dyn_enc_model, reference_mode, debug, gif_per_vid):
+         dec, reference_mode, debug, gif_per_vid):
   data_path = "../../../data/KTH/"
   f = open(data_path + "test_data_list.txt", "r")
   testfiles = f.readlines()
@@ -40,9 +40,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             + "_T=" + str(T)
             + "_B=" + str(B)
             + "_convlstm_layer_num=" + str(convlstm_layer_num)
-            # + "_fea_enc_model="+str(fea_enc_model)
-            # + "_dyn_enc_model="+str(dyn_enc_model)
-            # + "_reference_mode="+str(reference_mode)
+            + "_dec=" + str(dec)
             + "_batch_size=" + str(batch_size)
             + "_alpha=" + str(alpha)
             + "_beta=" + str(beta)
@@ -153,8 +151,8 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
                                                        cv2.COLOR_GRAY2BGR)),
                                        Image.fromarray(cv2.cvtColor(pred,
                                                        cv2.COLOR_GRAY2BGR)))
-          pred = draw_frame(pred, t % B < K)
-          target = draw_frame(target, t % B < K)
+          pred = draw_frame(pred, t % (T+K) < K)
+          target = draw_frame(target, t % (T+K) < K)
 
           cv2.imwrite(savedir+"/pred_"+"{0:04d}".format(t)+".png", pred)
           cv2.imwrite(savedir+"/gt_"+"{0:04d}".format(t)+".png", target)
@@ -219,8 +217,8 @@ if __name__ == "__main__":
                         default=1, help="number of color channels")
     parser.add_argument("--fea_enc_model", type=str, dest="fea_enc_model", default="pooling",
                         help="feature extraction model")
-    parser.add_argument("--dyn_enc_model", type=str, dest="dyn_enc_model", default="mix",
-                        help="dynamic encoding model")
+    parser.add_argument("--dec", type=str, dest="dec", default="normal",
+                        help="normal or depool")
     parser.add_argument("--reference_mode", type=str, dest="reference_mode", default="two",
                         help="refer to how many frames in the end")
     parser.add_argument("--debug", action="store_true", dest="debug", help="debug mode")

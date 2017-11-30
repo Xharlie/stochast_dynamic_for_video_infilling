@@ -12,7 +12,7 @@ from bi_conv_lstm_model import bi_convlstm_net
 from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu,load_pretrain,
-         tf_record_train_dir, tf_record_test_dir, color_channel_num, fea_enc_model,
+         tf_record_train_dir, tf_record_test_dir, color_channel_num, dec,
                  dyn_enc_model, reference_mode, debug, print_train_instead):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
@@ -49,9 +49,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
           + "_T="+str(T)
           + "_B="+str(B)
           + "_convlstm_layer_num="+str(convlstm_layer_num)
-          # + "_fea_enc_model="+str(fea_enc_model)
-          # + "_dyn_enc_model="+str(dyn_enc_model)
-          # + "_reference_mode="+str(reference_mode)
+          + "_dec="+str(dec)
           + "_batch_size="+str(batch_size)
           + "_alpha="+str(alpha)
           + "_beta="+str(beta)
@@ -227,8 +225,8 @@ if __name__ == "__main__":
                       default="../../../tf_record/KTH/test/", help="tf_record test location")
   parser.add_argument("--color_channel_num", type=int, dest="color_channel_num",
                       default=1, help="number of color channels")
-  parser.add_argument("--fea_enc_model", type=str, dest="fea_enc_model",default="pooling",
-                    help="feature extraction model")
+  parser.add_argument("--dec", type=str, dest="dec",default="deconv",
+                    help="deconv or depool")
   parser.add_argument("--dyn_enc_model", type=str, dest="dyn_enc_model", default="mix",
                       help="dynamic encoding model")
   parser.add_argument("--reference_mode", type=str, dest="reference_mode", default="two",

@@ -9,8 +9,8 @@ from utils import *
 class bi_convlstm_net(object):
     def __init__(self, image_size, batch_size=32, c_dim=3,
                  K=1, T=3, B=5, convlstm_layer_num=3, checkpoint_dir=None,
-                 is_train=True, debug = False, reference_mode = "two", convlstm_kernel = [3, 3]):
-
+                 is_train=True, debug = False, reference_mode = "two", convlstm_kernel = [3, 3], dec = 'normal'):
+        self.dec = dec
         self.convlstm_kernel = convlstm_kernel
         self.batch_size = batch_size
         self.image_size = image_size
@@ -88,7 +88,7 @@ class bi_convlstm_net(object):
                 self.D_, self.D_logits_ = self.discriminator(gen_data,self.is_dis)
             # pixel level loss
             self.L_p = tf.reduce_mean(
-                tf.square(self.G - self.target[:, :, :, :, :])
+                tf.square(self.G - self.target)
             )
             # gradient loss
             self.L_gdl = gdl(gen_sim, true_sim, 1.)
@@ -149,7 +149,10 @@ class bi_convlstm_net(object):
             for_seq = self.convRnn_seq_op(i, for_seq, reuse=reuse)
             # print for_seq.get_shape().as_list()
         for t in xrange(self.B * (self.T+self.K) + self.K):
-            x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse, train=is_gen)
+            if self.dec == 'depool':
+                x_hat = self.dec_cnn_depool(for_seq[:, t, :, :, :], reuse=reuse, train=is_gen)
+            else:
+                x_hat = self.dec_cnn(for_seq[:, t, :, :, :], reuse=reuse, train=is_gen)
             frames.append(tf.reshape(x_hat, [self.batch_size, self.image_size[0],
                                                  self.image_size[1], 1, self.c_dim]))
             reuse = True
@@ -201,8 +204,6 @@ class bi_convlstm_net(object):
         return feature, res_in
 
     # def encode_cnn(self, seq, reuse=False):
-
-
     def dec_cnn(self, comb, reuse=False, train=True):
         stride = int((self.image_size[0] / float(comb.get_shape().as_list()[1]))**(1/2.))
         if self.debug:
@@ -228,6 +229,33 @@ class bi_convlstm_net(object):
             print "dec_cnn,xtp1:{}".format(xtp1.get_shape())
         return xtp1
 
+    def dec_cnn_depool(self, comb, reuse=False, train=True):
+        stride = int((self.image_size[0] / float(comb.get_shape().as_list()[1]))**(1/2.))
+        if self.debug:
+            print "dec_cnn comb:{}".format(comb.get_shape().as_list()[1])
+            print "dec_cnn stride:{}".format(stride)
+        shapel3 = [self.batch_size, comb.get_shape().as_list()[1] ,
+                  comb.get_shape().as_list()[2] * stride, self.gf_dim * 4]
+        shapeout3 = [self.batch_size, comb.get_shape().as_list()[1] ,
+                  comb.get_shape().as_list()[2] * stride, self.gf_dim * 2]
+        depool3 = FixedUnPooling(comb, [2, 2])
+        deconv3_2 = relu(deconv2d(depool3, output_shape=shapel3, k_h=3, k_w=3,
+                                  d_h=1, d_w=1, name='dec_deconv3_2', reuse=reuse))
+        deconv3_1 = relu(deconv2d(deconv3_2, output_shape=shapeout3, k_h=3, k_w=3,
+                                  d_h=1, d_w=1, name='dec_deconv3_1', reuse=reuse))
+        shapeout3 = [self.batch_size, deconv3_1.get_shape().as_list()[1] * stride,
+                     deconv3_1.get_shape().as_list()[2] * stride, self.gf_dim]
+        depool2 = FixedUnPooling(deconv3_1, [2, 2])
+        deconv2_1 = relu(deconv2d(depool2, output_shape=shapeout3, k_h=3, k_w=3,
+                                  d_h=1, d_w=1, name='dec_deconv2_1', reuse=reuse))
+        shapeout1 = [self.batch_size, self.image_size[0],
+                     self.image_size[1], self.c_dim]
+        depool1 = FixedUnPooling(deconv2_1, [2, 2])
+        xtp1 = tanh(deconv2d(depool1, output_shape=shapeout1, k_h=3, k_w=3,
+                             d_h=1, d_w=1, name='dec_deconv1_1', reuse=reuse))
+        if self.debug:
+            print "dec_cnn,xtp1:{}".format(xtp1.get_shape())
+        return xtp1
 
     def discriminator(self, image, train=True):
         h0 = lrelu(conv2d(image, self.df_dim, name='dis_h0_conv'))
