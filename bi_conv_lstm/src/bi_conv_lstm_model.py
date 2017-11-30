@@ -77,11 +77,13 @@ class bi_convlstm_net(object):
                                        self.image_size[1], -1])
             good_data = btarget
             gen_data = bgen
-            full_length=btarget.get_shape().get_list()[3]
+            full_length=btarget.get_shape().as_list()[3]
+            ratio = 1
             if full_length > self.dis_length * self.c_dim:
                 start = self.c_dim * random.randint(0, full_length / self.c_dim - self.dis_length)
                 good_data = btarget[:,:,:,start:start+self.dis_length * self.c_dim]
                 gen_data = bgen[:,:,:,start:start+self.dis_length * self.c_dim]
+                ratio = full_length / (self.dis_length * self.c_dim *1.)
             if self.debug:
                 print good_data.get_shape().as_list()
                 print gen_data.get_shape().as_list()
@@ -99,18 +101,18 @@ class bi_convlstm_net(object):
             self.L_gdl = gdl(gen_sim, true_sim, 1.)
             self.L_img = self.L_p + self.L_gdl
 
-            self.d_loss_real = tf.reduce_mean(
+            self.d_loss_real = ratio * tf.reduce_mean(
                 tf.nn.sigmoid_cross_entropy_with_logits(
                     logits=self.D_logits, labels=tf.ones_like(self.D)
                 )
             )
-            self.d_loss_fake = tf.reduce_mean(
+            self.d_loss_fake = ratio * tf.reduce_mean(
                 tf.nn.sigmoid_cross_entropy_with_logits(
                     logits=self.D_logits_, labels=tf.zeros_like(self.D_)
                 )
             )
             self.d_loss = self.d_loss_real + self.d_loss_fake
-            self.L_GAN = tf.reduce_mean(
+            self.L_GAN = ratio * tf.reduce_mean(
                 tf.nn.sigmoid_cross_entropy_with_logits(
                     logits=self.D_logits_, labels=tf.ones_like(self.D_)
                 )
