@@ -8,14 +8,14 @@ from utils import *
 
 class bi_convlstm_net(object):
     def __init__(self, image_size, batch_size=32, c_dim=3,
-                 K=1, T=3, B=5, convlstm_layer_num=3, checkpoint_dir=None,
+                 K=1, T=3, B=5, convlstm_layer_num=3, checkpoint_dir=None, dis_length = 16,
                  is_train=True, debug = False, reference_mode = "two", convlstm_kernel = [3, 3], dec = 'normal'):
         self.dec = dec
         self.convlstm_kernel = convlstm_kernel
         self.batch_size = batch_size
         self.image_size = image_size
         self.is_train = is_train
-
+        self.dis_length=dis_length
         self.gf_dim = 32
         self.df_dim = 64
 
@@ -77,6 +77,11 @@ class bi_convlstm_net(object):
                                        self.image_size[1], -1])
             good_data = btarget
             gen_data = bgen
+            full_length=btarget.get_shape().get_list()[3]
+            if full_length > self.dis_length * self.c_dim:
+                start = self.c_dim * random.randint(0, full_length / self.c_dim - self.dis_length)
+                good_data = btarget[:,:,:,start:start+self.dis_length * self.c_dim]
+                gen_data = bgen[:,:,:,start:start+self.dis_length * self.c_dim]
             if self.debug:
                 print good_data.get_shape().as_list()
                 print gen_data.get_shape().as_list()

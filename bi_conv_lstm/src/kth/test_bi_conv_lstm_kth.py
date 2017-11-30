@@ -26,7 +26,7 @@ from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu, load_pretrain,
          tf_record_train_dir, tf_record_test_dir, color_channel_num, fea_enc_model,
-         dec, reference_mode, debug, gif_per_vid):
+         dec, reference_mode, debug, gif_per_vid,dis_length):
   data_path = "../../../data/KTH/"
   f = open(data_path + "test_data_list.txt", "r")
   testfiles = f.readlines()
@@ -41,6 +41,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
             + "_B=" + str(B)
             + "_convlstm_layer_num=" + str(convlstm_layer_num)
             + "_dec=" + str(dec)
+            + "_dis_length=" + str(dis_length)
             + "_batch_size=" + str(batch_size)
             + "_alpha=" + str(alpha)
             + "_beta=" + str(beta)
@@ -224,5 +225,7 @@ if __name__ == "__main__":
     parser.add_argument("--debug", action="store_true", dest="debug", help="debug mode")
     parser.add_argument("--gif_per_vid", type=int, dest="gif_per_vid", default=1,
                         help="refer to how many per video")
+    parser.add_argument("--dis_length", type=int, dest="dis_length",
+                        default=16, help="number frames to be sent in discriminator")
     args = parser.parse_args()
     main(**vars(args))

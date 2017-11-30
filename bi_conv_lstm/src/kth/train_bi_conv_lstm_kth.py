@@ -13,7 +13,7 @@ from utils import *
 
 def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, num_iter, gpu, cpu,load_pretrain,
          tf_record_train_dir, tf_record_test_dir, color_channel_num, dec,
-                 dyn_enc_model, reference_mode, debug, print_train_instead):
+                 dyn_enc_model, reference_mode, debug, print_train_instead, dis_length):
   check_create_dir(tf_record_train_dir)
   check_create_dir(tf_record_test_dir)
   train_tf_record_files=glob.glob(tf_record_train_dir+'*.tfrecords')
@@ -50,6 +50,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
           + "_B="+str(B)
           + "_convlstm_layer_num="+str(convlstm_layer_num)
           + "_dec="+str(dec)
+          + "_dis_length="+str(dis_length)
           + "_batch_size="+str(batch_size)
           + "_alpha="+str(alpha)
           + "_beta="+str(beta)
@@ -74,7 +75,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
   elif gpu:
       device_string = "/gpu:%d" % gpu[0]
   with tf.device(device_string):
-    model = bi_convlstm_net(image_size=[image_size,image_size], c_dim=1,
+    model = bi_convlstm_net(image_size=[image_size,image_size], c_dim=1, dis_length=dis_length,
                   K=K, T=T, B=B, convlstm_layer_num=convlstm_layer_num, batch_size=batch_size,
                   checkpoint_dir=checkpoint_dir, debug = debug, reference_mode = reference_mode)
     # for var in tf.trainable_variables():
@@ -234,6 +235,7 @@ if __name__ == "__main__":
   parser.add_argument("--debug", action="store_true", dest="debug", help="debug mode")
   parser.add_argument("--print_train_instead", action="store_true",
                       dest="print_train_instead", help="print_train_instead of test")
-
+  parser.add_argument("--dis_length", type=int, dest="dis_length",
+                      default=16, help="number frames to be sent in discriminator")
   args = parser.parse_args()
   main(**vars(args))
