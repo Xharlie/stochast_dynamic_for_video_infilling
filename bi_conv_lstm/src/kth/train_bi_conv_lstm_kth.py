@@ -155,13 +155,13 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
                                                     model.is_dis:False,
                                                     model.is_gen:False})
 
-            if errD_fake < margin or errD_real < margin:
-              updateD = False
-            if errD_fake > (1.-margin) or errD_real > (1.-margin):
-              updateG = False
-            if not updateD and not updateG:
-              updateD = True
-              updateG = True
+            # if errD_fake < margin or errD_real < margin:
+            #   updateD = False
+            # if errD_fake > (1.-margin) or errD_real > (1.-margin):
+            #   updateG = False
+            # if not updateD and not updateG:
+            #   updateD = True
+            #   updateG = True
 
             counter += 1
 

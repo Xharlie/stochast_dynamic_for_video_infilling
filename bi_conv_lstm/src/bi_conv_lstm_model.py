@@ -218,11 +218,11 @@ class bi_convlstm_net(object):
             print "dec_cnn stride:{}".format(stride)
         shape1 = [self.batch_size, comb.get_shape().as_list()[1] * stride,
                   comb.get_shape().as_list()[2] * stride, self.gf_dim * 4]
-        deconv1 = relu(batch_norm(deconv2d(comb,output_shape=shape1, k_h=3, k_w=3,
+        deconv1 = relu(batch_norm(deconv2d(comb,output_shape=shape1, k_h=4, k_w=4,
                       d_h=stride, d_w=stride, name='dec_deconv1', reuse=reuse), "dec_bn1",reuse=reuse,train=train))
         shape2 = [self.batch_size, deconv1.get_shape().as_list()[1] * stride,
                   deconv1.get_shape().as_list()[2] * stride, self.gf_dim * 2]
-        deconv2 = relu(batch_norm(deconv2d(deconv1, output_shape=shape2, k_h=3, k_w=3,
+        deconv2 = relu(batch_norm(deconv2d(deconv1, output_shape=shape2, k_h=4, k_w=4,
                        d_h=stride, d_w=stride, name='dec_deconv2', reuse=reuse), "dec_bn2",reuse=reuse,train=train))
         shape3 = [self.batch_size, self.image_size[0],
                   self.image_size[1], self.gf_dim]
