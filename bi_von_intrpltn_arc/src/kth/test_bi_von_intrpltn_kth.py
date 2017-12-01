@@ -64,7 +64,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
   with tf.Session(config=config) as sess:
 
     tf.global_variables_initializer().run()
-
+    print checkpoint_dir
     loaded, model_name = model.load(sess, checkpoint_dir, best_model)
 
     if loaded:
@@ -155,10 +155,11 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
                                        Image.fromarray(cv2.cvtColor(pred,
                                                        cv2.COLOR_GRAY2BGR)))
           pred = draw_frame(pred, t < K or t >= K+T)
-          target = draw_frame(target, t < K or t >= K+T)
+          blank = draw_blank(target, t < K or t >= K+T)
 
           cv2.imwrite(savedir+"/pred_"+"{0:04d}".format(t)+".png", pred)
           cv2.imwrite(savedir+"/gt_"+"{0:04d}".format(t)+".png", target)
+          cv2.imwrite(savedir+"/blk_gt_"+"{0:04d}".format(t)+".png", blank)
 
         cmd1 = "rm "+savedir+"/pred.gif"
         cmd2 = ("ffmpeg -f image2 -framerate 7 -i "+savedir+
@@ -167,16 +168,21 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, gpu,cpu, tf_record_test_
 
         # Comment out "system(cmd3)" if you want to keep the output images
         # Otherwise only the gifs will be kept
-        system(cmd1); system(cmd2); system(cmd3);
+        system(cmd1); system(cmd2); #system(cmd3);
 
         cmd1 = "rm "+savedir+"/gt.gif"
         cmd2 = ("ffmpeg -f image2 -framerate 7 -i "+savedir+
                 "/gt_%04d.png "+savedir+"/gt.gif")
         cmd3 = "rm "+savedir+"/gt*.png"
 
-        # Comment out "system(cmd3)" if you want to keep the output images
-        # Otherwise only the gifs will be kept
-        system(cmd1); system(cmd2); system(cmd3);
+        system(cmd1); system(cmd2); #system(cmd3);
+
+        cmd1 = "rm "+savedir+"/blk_gt.gif"
+        cmd2 = ("ffmpeg -f image2 -framerate 7 -i "+savedir+
+                "/blk_gt_%04d.png "+savedir+"/blk_gt.gif")
+        cmd3 = "rm "+savedir+"/blk_gt*.png"
+
+        system(cmd1); system(cmd2); #system(cmd3);
 
         psnr_err = np.concatenate((psnr_err, cpsnr[None,K:K+T]), axis=0)
         ssim_err = np.concatenate((ssim_err, cssim[None,K:K+T]), axis=0)
