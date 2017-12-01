@@ -54,10 +54,9 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
     device_string = "/gpu:%d" % gpu[0]
   with tf.device(device_string):
       # test batch size has to be 1
-      model = bi_convlstm_net(image_size=[image_size, image_size], c_dim=1,
+      model = bi_convlstm_net(image_size=[image_size, image_size], c_dim=1, dis_length=dis_length,
                               K=K, T=T, B=B, convlstm_layer_num=convlstm_layer_num, batch_size=1,
                               checkpoint_dir=checkpoint_dir, debug=debug, reference_mode=reference_mode)
-
   # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
   config = tf.ConfigProto(allow_soft_placement=True,
                           log_device_placement=False)
@@ -181,8 +180,7 @@ def main(lr, batch_size, alpha, beta, image_size, K, T, B, convlstm_layer_num, n
               "/blk_gt_%04d.png " + savedir + "/blk_gt.gif")
         cmd3 = "rm " + savedir + "/blk_gt*.png"
 
-        system(cmd1);
-        system(cmd2);  # system(cmd3);
+        system(cmd1);system(cmd2);  # system(cmd3);
     #     print psnr_err.shape
     #     print ssim_err.shape
     #     psnr_err = np.concatenate((psnr_err, cpsnr[None,:]), axis=0)
