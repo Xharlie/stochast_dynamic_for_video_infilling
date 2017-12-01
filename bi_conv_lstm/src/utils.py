@@ -85,6 +85,11 @@ def draw_frame(img, is_input):
 
   return img 
 
+def draw_blank(img, is_input):
+  if not is_input:
+    img = np.zeros_like(img)
+  return img
+
 # get seq and diff start arbitrarially
 def load_kth_data(f_name, data_path, image_size, K, T): 
   flip = np.random.binomial(1,.5,1)[0]
