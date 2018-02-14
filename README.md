@@ -1,18 +1,19 @@
 # Long-term video motion temporal super resolution
+This is an ongoing research, which is just half-done.
 ## 1. Introduction:
 This research considered two tasks:  
 ### a.Long-term video temporal super resolution</br>
 >![Image of TSR](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/Temporal_super_resolution.png)</br>
 
 | Real World Ground Truth |  | Video with low temporal resolution |  | Recovered Video |
-| --------------------- | --------------------- | --------------------- | --------------------- | --------------------- |
+| :---------------------: | :---------------------: | :---------------------: | :---------------------: | :---------------------: |
 | ![gt](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/super_resolution_gt.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/tsr_capture.png) | ![blk_gt](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/super_resolution_blk_gt.gif) | ![tsr_dnn](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/tsr_dnn.png) | ![pred](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/super_resolution_pred.gif) |
 
 ### b.Long-term video interpolation</br>
 >![Image of VI](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/Video_interpolation.png) </br>
 
 | Original Video |  | Input Video with missing frames |  | Recovered Video |
-| --------------------- | --------------------- | --------------------- | --------------------- | --------------------- |
+| :---------------------: | :---------------------: | :---------------------: | :---------------------: | :---------------------: |
 | ![gt](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/video_interpolation_gt.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/vi_damaged.png) | ![blk_gt](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/video_interpolation_blk_gt.gif) | ![tsr_dnn](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/vi_dnn.png) | ![pred](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/Introduction/video_interpolation_pred.gif) |
 </br>
 </br>
@@ -36,7 +37,7 @@ This research considered two tasks:
 temporal super resolution rate as 4(green frames is given, red frames are missing)</br>
 
 | Methods | Running | boxing | clapping | waving |
-| --------------------- | --------------------- | --------------------- | --------------------- | --------------------- |
+| :---------------------: | :---------------------: | :---------------------: | :---------------------: | :---------------------: |
 | Ground Truth | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person21_running_d2_118_gt.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_boxing_d4_104_gt.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handclapping_d2_116_gt.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handwaving_d3_224_gt.gif) |
 | Ours | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person21_running_d2_118_pred.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_boxing_d4_104_pred.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handclapping_d2_116_pred.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handwaving_d3_224_pred.gif) |
 | Niklaus et al. | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person21_running_d2_118_soa.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_boxing_d4_104_soa.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handclapping_d2_116_soa.gif) | ![captured](https://github.com/Xharlie/motion_temporal_super_resolution/blob/master/site-content/super_resolution_result/person22_handwaving_d3_224_soa.gif) |
