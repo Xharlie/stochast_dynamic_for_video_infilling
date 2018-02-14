@@ -91,7 +91,7 @@ def draw_blank(img, is_input):
   return img
 
 # get seq and diff start arbitrarially
-def load_kth_data(f_name, data_path, image_size, K, T): 
+def load_data(f_name, data_path, image_size_h, image_size_w, K, T):
   flip = np.random.binomial(1,.5,1)[0]
   tokens = f_name.split()
   vid_path = data_path + tokens[0] + "_uncomp.avi"
@@ -103,10 +103,10 @@ def load_kth_data(f_name, data_path, image_size, K, T):
   else:
     if low >= high: print(vid_path)
     stidx = np.random.randint(low=low, high=high)
-  seq = np.zeros((image_size, image_size, 2*K+T, 1), dtype="float32")
+  seq = np.zeros((image_size_h, image_size_w, 2*K+T, 1), dtype="float32")
   for t in xrange(2*K+T):
     img = cv2.cvtColor(cv2.resize(vid.get_data(stidx+t),
-                       (image_size,image_size)),
+                       (image_size_h, image_size_w)),
                        cv2.COLOR_RGB2GRAY)
     seq[:,:,t] = transform(img[:,:,None])
 
@@ -115,9 +115,20 @@ def load_kth_data(f_name, data_path, image_size, K, T):
 
   return seq
 
-def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B, flipable=True):
+def decode_vids(seq_batch,h, w, d_batch, c):
+  seq_vids = []
+  # print seq_batch.shape
+  for i in range(seq_batch.shape[0]):
+    vid = np.fromstring(seq_batch[i], dtype=np.uint8)
+    # print vid, vid.shape, d_batch
+    vid = vid.reshape((h,w,d_batch[i][0],c))
+    seq_vids.append(vid)
+    # print i
+  return seq_vids
+
+def load_data_from_list(train_vids, batchidx, image_size_h, image_size_w, K, T, B, flipable=True, channel = 1):
   length = B * (K + T) + K
-  seq = np.zeros((len(batchidx), image_size, image_size, length, 1), dtype="float32")
+  seq = np.zeros((len(batchidx), image_size_h, image_size_w, length, channel), dtype="float32")
   for i in range(len(batchidx)):
     stidx = 0
     selected = train_vids[batchidx[i]]
@@ -133,7 +144,7 @@ def load_kth_data_from_list(train_vids, batchidx, image_size, K, T, B, flipable=
         stidx = np.random.randint(low=low, high=high)
       break
     for t in xrange(length):
-      seq[i,:,:,t] = transform(selected[:,:,t+stidx,:])
+      seq[i,:,:,t,:] = transform(selected[:,:,t+stidx,:])
 
     if flipable:
       flip = np.random.binomial(1,.5,1)[0]
@@ -198,3 +209,10 @@ def create_missing_frames(seq_batch_tran, K,T):
       if modulus >= K:
         seq_batch_tran[:,i,:,:,:] = np.zeros_like(seq_batch_tran[:,i,:,:,:])
     return seq_batch_tran
+
+def depth_to_width(img_seq):
+    out = img_seq[0, :, :, :]
+    for i in range(1, img_seq.shape[0]):
+        out = np.concatenate([out, img_seq[i, :, :, :]], axis=1)
+    # print out.shape
+    return out

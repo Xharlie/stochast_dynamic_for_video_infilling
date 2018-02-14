@@ -20,7 +20,7 @@ from PIL import ImageDraw
 import glob
 
 sys.path.append("../")
-from bi_von_model import bi_von_net
+# from bi_von_model import bi_von_net
 from utils import *
 
 def main(image_size, K, T, parent_dir, color_channel_num, gif_per_vid):
