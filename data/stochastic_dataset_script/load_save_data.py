@@ -2,8 +2,6 @@ import tensorflow as tf
 import numpy as np
 import imageio
 import cv2
-import utils
-import glob
 
 def vids_2_frames(tfiles, data_path, image_size_h, image_size_w, channel):
     vids=[]
@@ -73,7 +71,7 @@ def save_data2records(tfiles, data_path, image_size_h, image_size_w, tf_record_d
         end = min(start + tf_size, len(tfiles) + 1)
         if end + tf_size / 4 > len(tfiles): end = len(tfiles) + 1
         print "file start and end:",start,end
-        vids,_ = vids_2_frames(tfiles[start:end], data_path, image_size_h, image_size_w, channel)
+        vids, actions = vids_2_frames(tfiles[start:end], data_path, image_size_h, image_size_w, channel)
         tfrecords_filename = 'tfrecords' + str(start / tf_size)
         writer = tf.python_io.TFRecordWriter(tf_record_dir + tfrecords_filename)
         for i in xrange(len(vids)):
@@ -83,6 +81,7 @@ def save_data2records(tfiles, data_path, image_size_h, image_size_w, tf_record_d
                     'width': _int64_feature(image_size_w),
                     'depth': _int64_feature(vids[i].shape[2]),
                     'channels': _int64_feature(channel),
+                    'action': _bytes_feature(actions[i]),
                     'vid': _bytes_feature(vids[i].tostring())
                 }
             ))
@@ -93,7 +92,7 @@ def save_data2records(tfiles, data_path, image_size_h, image_size_w, tf_record_d
         start = end
     return files
 
-def load_records(tf_record_files):
+def load_records(tf_record_files, length=None):
     vids = []
     for i in xrange(len(tf_record_files)):
         print "loading {}".format(tf_record_files[i])
@@ -120,6 +119,9 @@ def load_records(tf_record_files):
 
             vid_raw = np.fromstring(vid_string, dtype=np.uint8)
             vid = vid_raw.reshape((height, width, depth, -1))
+            if length is not None and vid.shape[-2] < length:
+                print length, vid.shape[-2]
+                continue
             vids.append(vid)
         print "finish {}".format(tf_record_files[i])
         print len(vids), " videos in total"

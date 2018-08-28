@@ -1,0 +1,416 @@
+
+---- mnist: alpha 0.0001 is bad, z_channel=10 is bad, mask is bad
+
+// nohup python -u train_stochastic.py --gpu=0 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 24 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 5 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.5.batch32.alpha0.001_z_channel24_lstm_bisto_l1_120001_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_smnist &
+killed
+nohup python -u train_stochastic.py --gpu=0 --lr 0.006 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 24 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.alpha0.001_z_channel24_lstm_bisto_l1_120001_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_smnist &
+
+bad
+nohup python -u train_stochastic.py --gpu=0 --lr 0.006 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 10 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.alpha0.001_z_channel10_lstm_bisto_l1_120001_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_smnist &
+
+bad
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 10 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.005 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.alpha0.005_z_channel10_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+killed
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 10 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l2 &> train.1.5.3.batch32.lr0.006.alpha0.0001_z_channel10_lstm_bisto_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+
+l2 bad
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.001 --mode bi_sto --cell_type lstm --pixel_loss l2 &> train.1.5.3.batch32.lr0.006.alpha0.001_z_channel32_lstm_bisto_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+
+good space aware 153
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.alpha0.001_z_channel32_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+beta1 0.9 not good
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.9 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.beta10.9.alpha0.003_z_channel32_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+space aware
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.lr0.006.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+
+space aware 155
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 5 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.5.batch32.lr0.006.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+---- bair
+
+bad
+nohup python -u train_stochastic.py --gpu=1 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 5 --B 3 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask3_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_bair &
+
+fine
+nohup python -u train_stochastic.py --gpu=2 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 5 --B 3 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask3_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+good
+nohup python -u train_stochastic.py --gpu=3 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 5 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask0_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+tensorboard --logdir=nospace:sto_h=64_w=64_K=1_T=5_B=3_batch_size=32_beta1=0.5_alpha=0.0001_lr=0.002_mode=bi_sto_space_aware=False_z_channel=64_p_loss=l1_cell_type=lstm_norm=True_mask_w=3_res_type=avg_neg_noise=True_res_ref=True_pic_norm=True_start_perc=0.2,space3mask:sto_h=64_w=64_K=1_T=5_B=3_batch_size=32_beta1=0.5_alpha=0.0001_lr=0.002_mode=bi_sto_space_aware=True_z_channel=64_p_loss=l1_cell_type=lstm_norm=True_mask_w=3_res_type=avg_neg_noise=True_res_ref=True_pic_norm=True_start_perc=0.2,space0mask:sto_h=64_w=64_K=1_T=5_B=3_batch_size=32_beta1=0.5_alpha=0.0001_lr=0.002_mode=bi_sto_space_aware=True_z_channel=64_p_loss=l1_cell_type=lstm_norm=True_mask_w=0_res_type=avg_neg_noise=True_res_ref=True_pic_norm=True_start_perc=0.2 --port 6019
+
+nohup python -u train_stochastic.py --gpu=0 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask0_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+nohup python -u train_stochastic.py --gpu=1 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask1_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+nohup python -u train_stochastic.py --gpu=2 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 8 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.8.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask0_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+nohup python -u train_stochastic.py --gpu=3 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 8 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.8.3.batch32.alpha0.0001_z_channel64_lstm_bisto_l1_120001_mask1_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+
+---- kth
+
+nohup python -u train_stochastic.py --gpu=0 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 5 --B 5 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.5.batch32.alpha0.0001_z_channel32_lstm_bisto_l1_120001_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_kth &
+
+nohup python -u train_stochastic.py --gpu=0 --num_iter 120001 --batch_size=32 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 5 --B 5 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.5.batch32.alpha0.0001_z_channel32_lstm_bisto_l1_120001_space_aware_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_kth &
+
+nohup python -u train_stochastic.py --gpu=0 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 5 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.alpha0.0001_z_channel32_lstm_bisto_l1_120001_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_kth &
+
+nohup python -u train_stochastic.py --gpu=0 --num_iter 120001 --batch_size=32 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 5 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.0001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.5.3.batch32.alpha0.0001_z_channel32_lstm_bisto_l1_120001_space_aware_mask5_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_kth &
+
+
+Real paper experiment
+------ SMMNIST 1 15 5:
+--evaluation:
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative  --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_space_aware --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_nospace.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_mask3.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_175.002.001.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> sm_learnedprior1155.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> sm_deter_flexible1155.log &
+
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_testtrain.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151_testtrain.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --no_space_aware --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_nospace_testtrain.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_mask3_testtrain.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_175.002.001_testtrain.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --testtrain --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> sm_learnedprior1155_testtrain.log &
+
+1:15:5 space
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155.log &
+Prior PSNR average: 12.463716372227909 Prior SSIM average 0.7279899514587657 Prior flow_err average 8.834341039105007
+Post PSNR average: 23.451689738559352 Post SSIM average 0.9515224121030283 Post flow_err average 0.18738701920422804
+PriorOne PSNR overall average: 21.274246638859744 PriorOne SSIM overall average 0.9276954987991841 PriorOne flow_err average 0.40990001355021377
+PriorOne PSNR per frame: [15.46124    20.72589716 21.32797972 21.54771701 21.62479995 21.40244058 21.58639755 21.62244073 21.64339709 21.57093969 21.85002051 21.96369234 21.96818665 22.11400058 22.70455002]
+PriorOne SSIM per frame: [0.80300375 0.92241979 0.93171831 0.93351153 0.93486172 0.93196139 0.93540087 0.93640304 0.93684346 0.93527875 0.93883996 0.94117162 0.94079947 0.94288824 0.95033059]
+
+1:15:1 space
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative  --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151.log &
+nohup python -u test_stochastic.py --gpu=0 --quantitative  --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151.log &
+Prior PSNR average: 10.851567524533076 Prior SSIM average 0.6861875361509409 Prior flow_err average 10.300680245272815
+Post PSNR average: 23.48781201709635 Post SSIM average 0.9507739235154807 Post flow_err average 0.19694062574126292
+PriorOne PSNR overall average: 20.93234326886712 PriorOne SSIM overall average 0.9222143764808926 PriorOne flow_err average 0.698398263232472
+PriorOne PSNR per frame: [15.13667494 20.77402297 21.37201295 21.64592836 21.59527999 21.30437786 21.43086182 21.55569138 21.35814019 21.27679002 21.45708264 21.42427958 21.22267215 21.15909083 21.27224335]
+PriorOne SSIM per frame: [0.7943973  0.92320363 0.93209538 0.93499281 0.93431351 0.93036614 0.93360295 0.93517048 0.93173282 0.92946904 0.93313006 0.93198709 0.92895003 0.92872479 0.93107962]
+
+
+60000
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative  --best_model bi_conv_lstm.model-60000 --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151-60000.log &
+
+30000
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative  --best_model bi_conv_lstm.model-30000 --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151-30000.log &
+
+40000
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative  --best_model bi_conv_lstm.model-40000 --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1151-40000.log &
+
+
+1:15:5 no space
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_space_aware --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_nospace.log &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --no_space_aware --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_nospace.log &
+Prior PSNR average: 11.355141596243811 Prior SSIM average 0.7091473251640382 Prior flow_err average 9.789138932246715
+Post PSNR average: 12.232943857467237 Post SSIM average 0.7361155364046468 Post flow_err average 9.42542905989103
+
+1:15:5 space mask 3
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_mask3.log &
+nohup python -u test_stochastic.py --gpu=2 --quantitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_1155_mask3.log &
+Prior PSNR average: 11.968880201661232 Prior SSIM average 0.7109703395100516 Prior flow_err average 8.72967044931526
+Post PSNR average: 24.436662438101717 Post SSIM average 0.9608040284217298 Post flow_err average 0.11625821849884233q
+PriorOne PSNR overall average: 21.481095240346196 PriorOne SSIM overall average 0.9267210690351029 PriorOne flow_err average 0.3282853800834952
+PriorOne PSNR per frame: [15.56968782 20.8542238  21.51881481 21.81892568 21.84851506 21.62233561 21.80320966 21.81708435 21.86277983 21.78482319 22.05272424 22.18483741 22.18435903 22.30834713 22.98576098]
+PriorOne SSIM per frame: [0.76892267 0.92248184 0.93219679 0.93529293 0.93631834 0.93275351 0.93680517 0.93789212 0.93814542 0.93671402 0.94039989 0.94239486 0.94243089 0.94480069 0.9532669 ]
+
+learned prior 1:15:5, start_percentage=1.0, no space, no pic_norm
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> sm_learnedprior1155.log &
+nohup python -u test_stochastic.py --gpu=0 --quantitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> sm_learnedprior1155.log &
+Prior PSNR average: 11.196503237074184 Prior SSIM average 0.6915486990908772 Prior flow_err average 8.982356747457137
+Post PSNR average: 12.116721254076488 Post SSIM average 0.7363551911298074 Post flow_err average 10.08905570426335
+PriorOne PSNR overall average: 13.127202835284455 PriorOne SSIM overall average 0.7094052154310901 PriorOne flow_err average 5.893091498563687
+PriorOne PSNR per frame: [12.63621216 13.13962995 13.14116782 13.13607042 13.1388198  13.14758068
+ 13.14221313 13.14132343 13.14912738 13.15215235 13.15871195 13.16662501 13.18656712 13.21189191 13.25994943]
+PriorOne SSIM per frame: [0.66767987 0.70720058 0.71618096 0.71485044 0.71496408 0.71499702
+ 0.71453147 0.71269238 0.71136186 0.71084238 0.71046819 0.709646 0.71046073 0.71149058 0.71371171]
+
+
+deter_flexible 1:15:5, start_percentage=1.0, no space, no pic_norm l2
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> sm_deter_flexible1155.log &
+Prior PSNR average: 12.395148933012594 Prior SSIM average 0.7013821171152977 Prior flow_err average 9.297755523584783
+Post PSNR average: 12.395148933012594 Post SSIM average 0.7013821171152977 Post flow_err average 9.297755523584783
+
+ per frame: [0.86001203 0.92617487 0.93273744 0.93604765 0.93843847 0.94003268 0.94905766]
+
+----- training
+1:15:5 space
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+1:15:1 space
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.15.1.batch32.lr0.002.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+1:15:5 no space
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=3 --iters 50001 --load_pretrain --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+1:15:5 space mask 3
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 3 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask3_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+learned prior 1:15:5, start_percentage=1.0, no space, no pic_norm
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_learned_prior_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+
+deter_flexible 1:15:5, start_percentage=1.0, no space, no pic_norm l2
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 15 --B 5 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.15.5.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_deter_flexible_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+
+
+--- 1 7 3 SMMNIST
+--evaluation:
+
+nohup python -u test_stochastic.py --quantitative --qualitative --gpu=1 --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_173.log &
+nohup python -u test_stochastic.py --quantitative --qualitative --gpu=1 --lr 0.002 --num_iter 120001 --no_space_aware --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_173_nospace.log &
+
+nohup python -u test_stochastic.py --quantitative --qualitative --gpu=1 --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_171.log &
+nohup python -u test_stochastic.py --quantitative --qualitative --gpu=1 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> sm_learned_prior.log &
+nohup python -u test_stochastic.py --quantitative --qualitative --gpu=1 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> sm_deter_flex.log &
+
+
+5, 11,12,23,29,33,44,49, 55,61,66,74,84,88,93,121,139,149, 157,158,167,182, 188,196
+
+
+
+1:7:5 space mask 0 alpha0.002 gamma=0.001
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_175.002.001.log &
+nohup python -u test_stochastic.py --gpu=3 --quantitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> sm_175.002.001.log &
+Prior PSNR average: 14.528913640080148 Prior SSIM average 0.786036207824597 Prior flow_err average 4.059037374487768
+Post PSNR average: 22.893521544579066 Post SSIM average 0.9460597547656264 Post flow_err average 0.18991084167889008
+PriorOne PSNR overall average: 21.025623507095766 PriorOne SSIM overall average 0.9260715432037282 PriorOne flow_err average 0.30377480304741766
+PriorOne PSNR per frame: [17.46137113 20.88579335 21.27667042 21.4931871  21.70505283 21.81003019 22.54725952]
+PriorOne SSIM
+
+------ training
+not good, remove
+1:7:5 space mask 0 alpha0.0015 gamma=0.0015, percentage 0.0, hard0.5
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.0 --res_type  avg --alpha=0.0015 --gamma=0.0015 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.5.batch32.lr0.006.alpha0.0015_gamma0.0015_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.0_smnist &
+1:7:5 space mask 0 alpha0.001 gamma=0.003 not good, remove
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.001 --gamma=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.5.batch32.lr0.006.alpha0.001_gamma0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+1:7:5 space mask 0
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 5 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.5.batch32.lr0.006.alpha0.003_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --iters 50001 --load_pretrain --num_iter 120001 --no_space_aware --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_no_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --iters 50001 --load_pretrain --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.1.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --iters 50001 --load_pretrain --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_learned_prior_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --iters 50001 --load_pretrain --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_deter_flexible_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+
+
+1:7:3 space mask 0 alpha0.002 gamma=0.001
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+1:7:3 no space mask 0 alpha0.002 gamma=0.001
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --num_iter 120001 --no_space_aware --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_no_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --iters 50001 --load_pretrain --num_iter 120001 --no_space_aware --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_no_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+1:7:1 space mask 0 alpha0.002 gamma=0.001
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.1.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --iters 50001 --load_pretrain --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 1 --mask_weight 0 --start_percentage 0.2 --res_type  avg --alpha=0.002 --gamma=0.001 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.1.batch32.lr0.006.alpha0.002_gamma0.001_z_channel32_space_aware_lstm_bisto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_smnist &
+
+1:7 learned prior
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_learned_prior_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --iters 50001 --load_pretrain --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_learned_prior_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+
+1:7 deter flexible
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_deter_flexible_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --iters 50001 --load_pretrain --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset smmnist --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.003 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_deter_flexible_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_smnist &
+
+
+
+--------------------------------------------- kth:
+188,190, 234 ***, 236, 248 **, 249,264, 345, 346
+---evaluation:
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode learned_prior --cell_type lstm --pixel_loss l1 &> kth_learned173 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> kth_deter173 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173_nospace &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 1 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto171 &
+
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative --testtrain --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode learned_prior --cell_type lstm --pixel_loss l1 &> kth_learned173_testtrain.log &
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173_testtrain.log &
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative --testtrain --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173_nospace_testtrain.log &
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative --testtrain --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 1 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto171_testtrain.log &
+
+
+
+learned prior 1:7:3, start_percentage=1.0, no space, no pic_norm
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode learned_prior --cell_type lstm --pixel_loss l1 &> kth_learned173 &
+Prior PSNR average: 28.14248735877022 Prior SSIM average 0.8838988589661668 Prior flow_err average 0.5370231798942916
+Post PSNR average: 19.568324802385668 Post SSIM average 0.37602778632286266 Post flow_err average 2.6163382346281594
+PriorOne PSNR overall average: 27.159914084191072 PriorOne SSIM overall average 0.8577393242660193 PriorOne flow_err average 0.9656200600904683
+PriorOne PSNR per frame: [26.78373857 27.30518959 27.30195031 27.32595161 27.31524268 27.24482807 26.84249777]
+PriorOne SSIM per frame: [0.83477614 0.85292355 0.85639733 0.85969103 0.86332832 0.8684002 0.8686587 ]
+
+
+deter_flexible 1:7:3, start_percentage=1.0, no space, no pic_norm l2
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> kth_deter173 &
+Prior PSNR per frame: [30.74886068 29.54018667 28.97777158 28.81907274 28.85344389 29.14868002 29.93280168]
+Prior SSIM per frame: [0.91493106 0.90007588 0.89201232 0.88930841 0.89043273 0.89691402 0.91040617]
+Prior PSNR overall average: 29.431545323611036 Prior SSIM overall average 0.8991543702460536 Prior flow_err average 0.239620463491532
+Post PSNR per frame: [30.74886068 29.54018667 28.97777158 28.81907274 28.85344389 29.14868002 29.93280168]
+Post SSIM per frame: [0.91493106 0.90007588 0.89201232 0.88930841 0.89043273 0.89691402 0.91040617]
+Post PSNR overall average: 29.431545323611036 Post SSIM overall average 0.8991543702460536 Post flow_err average 0.239620463491532
+
+
+sto 1:7:3, start_percentage=0.2, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173 &
+Prior PSNR average: 29.18898863889034 Prior SSIM average 0.900612291032188 Prior flow_err average 0.32926585214113135
+Post PSNR average: 27.683120688431192 Post SSIM average 0.7970335001059914 Post flow_err average 0.24765420578454736
+PriorOne PSNR overall average: 30.693921431945952 PriorOne SSIM overall average 0.9109295260640297 PriorOne flow_err average 0.12880595289970254
+PriorOne PSNR per frame: [30.77097325 30.67498209 30.55982805 30.5306602  30.57336548 30.68742866 31.06021229]
+PriorOne SSIM per frame: [0.91515803 0.91024997 0.90720164 0.90651928 0.90739357 0.9113283 0.9186559]
+
+
+sto 1:7:3, start_percentage=0.2, no space, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto173_nospace &
+Prior PSNR average: 29.366427453361727 Prior SSIM average 0.8985003272658675 Prior flow_err average 0.2759840328445152
+Post PSNR average: 17.67089029275114 Post SSIM average 0.20546330708600413 Post flow_err average 1.5457369558979905
+PriorOne PSNR overall average: 27.916152394930904 PriorOne SSIM overall average 0.8790994225290629 PriorOne flow_err average 0.6588438859040873
+PriorOne PSNR per frame: [28.02687724 27.89049336 28.00004907 28.03461916 27.8370785  27.66890084 27.95504859]
+PriorOne SSIM per frame: [0.88538687 0.87802082 0.87631841 0.8762205  0.87486413 0.87625804 0.88662719]
+
+
+sto 1:7:1, start_percentage=0.2, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --lr 0.002 --num_iter 120001 --batch_size=1 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 1 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> kth_sto171 &
+Prior PSNR average: 25.870001997676226 Prior SSIM average 0.8313495273246012 Prior flow_err average 2.2002295944407546
+Post PSNR average: 26.90790800002411 Post SSIM average 0.7380068247844579 Post flow_err average 0.47829816414350146
+PriorOne PSNR overall average: 28.89738810473262 PriorOne SSIM overall average 0.8679614482946834 PriorOne flow_err average 0.38938774040785645
+PriorOne PSNR per frame: [28.88775662 29.34989778 29.07815346 28.97460904 28.80458626 28.68109635 28.50561723]
+PriorOne SSIM per frame: [0.89210875 0.88736195 0.87600489 0.86793236 0.85844751 0.85083623 0.84303844]
+
+train:
+
+learned prior 1:7:3, start_percentage=1.0, no space, no pic_norm
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_pic_norm --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.0001_z_channel32_no_space_aware_lstm_learned_prior_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_kth &
+
+deter_flexible 1:7:3, start_percentage=1.0, no space, no pic_norm l2
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002  --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type  avg --alpha=0.0001 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.7.3.batch32.lr0.006.alpha0.003_z_channel32_no_space_aware_lstm_deter_flexible_l2_120001_mask0_avg_res_ref_picnorm_start_loss_percentage1.0_kth &
+
+
+sto 1:7:3, start_percentage=0.2, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u train_stochastic.py --gpu=3 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.00007gamma0.00003_z_channel32_no_space_aware_lstm_bi_sto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_kth &
+
+
+sto 1:7:3, start_percentage=0.2, no space, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u train_stochastic.py --gpu=0 --lr 0.002 --no_space_aware --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 3 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.lr0.006.alpha0.00007gamma0.00003_z_channel32_no_space_aware_lstm_bi_sto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_kth &
+
+
+sto 1:7:1, start_percentage=0.2, alpha0.00007 gamma=0.00003, mask=5
+nohup python -u train_stochastic.py --gpu=2 --lr 0.002 --num_iter 120001 --batch_size=32 --beta1 0.5 --z_channel 32 --color_channel_num 1 --dataset kth --K 1 --T 7 --B 1 --mask_weight 5 --start_percentage 0.2 --res_type  avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.1.batch32.lr0.006.alpha0.00007gamma0.00003_z_channel32_no_space_aware_lstm_bi_sto_l1_120001_mask0_avg_res_ref_picnorm_start_loss_percentage0.2_kth &
+
+
+
+------- bair:
+
+28, 40,114,165, 220, 281, 350, 413, 475***
+---- evaluation:
+save_gt
+nohup python -u test_stochastic.py --gpu=1 --save_gt --quantitative --qualitative --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173nospace &
+
+
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 1 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_171 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_space_aware --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173nospace &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0001 --gamma=0.0 --mode learned_prior --cell_type lstm --pixel_loss l1 &> bair_learned173 &
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0 --gamma=0.0 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> bair_deter173 &
+
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative --testtrain --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 1 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_171_testtrain.log &
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative --testtrain --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173_testtrain.log &
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative --testtrain --no_space_aware --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173nospace_testtrain.log &
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative --testtrain --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0001 --gamma=0.0 --mode learned_prior --cell_type lstm --pixel_loss l1 &> bair_learned173_testtrain.log &
+
+sto 1:7:3, start_percentage=0.2,  alpha0.00007 gamma=0.00003, mask=1
+nohup python -u test_stochastic.py --gpu=2 --quantitative --qualitative --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173 &
+Prior PSNR per frame: [22.52600225 20.15349536 19.44318651 19.48827922 19.65954551 20.21486931 21.54006862]
+Prior SSIM per frame: [0.90236028 0.86933148 0.86023755 0.85945471 0.86263484 0.87124342 0.89242957]
+Prior PSNR overall average: 20.43220668296761 Prior SSIM overall average 0.8739559804627416 Prior flow_err average 1.0570972983068714
+
+Post PSNR per frame: [25.58209207 25.15351519 25.07010741 25.00391187 25.07742415 25.24912027 25.59281282]
+Post SSIM per frame: [0.94256849 0.93593591 0.93413822 0.93350987 0.93474879 0.93666121 0.9417329 ]
+Post PSNR overall average: 25.246997682814627 Post SSIM overall average 0.9370421986908586 Post flow_err average 0.1793241864461379
+
+PriorOne PSNR overall average: 23.16156096771763 PriorOne SSIM overall average 0.9125457291414573 PriorOne flow_err average 0.234818501367954
+PriorOne PSNR per frame: [22.24615928 22.47304072 22.97704704 22.95843154 23.28180051 23.35827372 24.83617398]
+PriorOne SSIM per frame: [0.90221307 0.90311427 0.90963075 0.90844522 0.91367843 0.91413821 0.93660016]
+
+
+sto 1:7:1, start_percentage=0.2,  alpha0.00007 gamma=0.00003, mask=1
+nohup python -u test_stochastic.py --gpu=3 --quantitative --qualitative --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 1 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_171 &
+Prior PSNR per frame: [22.23934412 19.98571024 19.11809962 18.76115016 18.6493985  18.98268096 20.11942614]
+Prior SSIM per frame: [0.89596087 0.860265   0.84511581 0.83730601 0.83439617 0.83749133 0.85322567]
+Prior PSNR overall average: 19.693687107605857 Prior SSIM overall average 0.8519658385165265 Prior flow_err average 1.3657098837938975
+
+Post PSNR per frame: [25.02510159 24.27000015 23.95140704 23.65071788 23.45606749 23.26962804 23.0670805 ]
+Post SSIM per frame: [0.93234994 0.91998249 0.91404738 0.90889515 0.90531304 0.90127516 0.89754149]
+Post PSNR overall average: 23.812857527028775 Post SSIM overall average 0.9113435229517507 Post flow_err average 0.29211185977692367
+
+PriorOne PSNR overall average: 22.6459645047987 PriorOne SSIM overall average 0.900151249537349 PriorOne flow_err average 0.3295719005382125
+PriorOne PSNR per frame: [22.07997285 22.53136785 22.81282518 22.58870985 22.64935972 22.45522802 23.40428806]
+PriorOne SSIM per frame: [0.89834244 0.89969667 0.90344745 0.89823625 0.89828202 0.89388367 0.90917024]
+
+
+sto 1:7:3, start_percentage=0.2, no space, alpha0.00007 gamma=0.00003, mask=1
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_space_aware --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> bair_173nospace &
+Prior PSNR per frame: [22.20158579 19.65720333 19.15886374 18.83370524 18.96843684 19.77639216 20.97129117]
+Prior SSIM per frame: [0.89623679 0.86064906 0.85289948 0.84840603 0.85085242 0.86318602 0.8834545 ]
+Prior PSNR overall average: 19.938211182142084 Prior SSIM overall average 0.8650977571673708 Prior flow_err average 1.1589247191714094
+
+Post PSNR per frame: [19.3842174  19.11884825 19.08860378 19.03530809 19.11601173 19.33181415 19.59452547]
+Post SSIM per frame: [0.83640365 0.82749379 0.82640223 0.82503573 0.82643702 0.83019238 0.83879842]
+Post PSNR overall average: 19.238475553913364 Post SSIM overall average 0.8301090321094691 Post flow_err average 1.0198416756138613
+
+PriorOne PSNR overall average: 19.83241875203881 PriorOne SSIM overall average 0.8672925625922421 PriorOne flow_err average 1.0105814075141097
+PriorOne PSNR per frame: [20.12692698 19.64546821 19.58045173 19.53072106 19.65327339 19.90092978 20.3891601 ]
+PriorOne SSIM per frame: [0.87828982 0.86323278 0.86160956 0.86082003 0.86264305 0.86673586\ 0.87771684]
+
+
+learned prior 1:7:3, start_percentage=1.0,  alpha0.0001, mask=0, no space, no pic_norm
+nohup python -u test_stochastic.py --gpu=0 --quantitative --qualitative --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0001 --gamma=0.0 --mode learned_prior --cell_type lstm --pixel_loss l1 &> bair_learned173 &
+Prior PSNR per frame: [21.1308569  19.2215164  18.65536881 18.18863026 17.97994958 17.77074177 17.58967214]
+Prior SSIM per frame: [0.88192665 0.85380272 0.84506429 0.83650267 0.83412148 0.83215106 0.83291228]
+Prior PSNR overall average: 18.648105124145193 Prior SSIM overall average 0.8452115931748087 Prior flow_err average 1.8905500187393045
+
+Post PSNR per frame: [17.95311519 17.87489951 17.88792293 17.84783554 17.90311476 18.00748582 18.14625108]
+Post SSIM per frame: [0.78678436 0.78077306 0.7800874  0.77854332 0.77954964 0.78205266 0.78874235]
+Post PSNR overall average: 17.94580354669028 Post SSIM overall average 0.7823618278685992 Post flow_err average 1.1344345493271248
+
+PriorOne PSNR overall average: 18.986468368003322 PriorOne SSIM overall average 0.8546822105861153 PriorOne flow_err average 1.1139934154271032
+PriorOne PSNR per frame: [18.89419711 18.82615617 18.93204803 18.80858755 18.99752848 19.13440523 19.312356  ]
+PriorOne SSIM per frame: [0.85474785 0.85091697 0.85339065 0.85021018 0.85302968 0.85590141 0.86457873]
+
+
+deter_flexible 1:7:3, start_percentage=1.0, alpha0.0001, mask=0, no space, no pic_norm
+nohup python -u test_stochastic.py --gpu=1 --quantitative --qualitative --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=1 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0 --gamma=0.0 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> bair_deter173 &
+Prior PSNR per frame: [22.53037713 19.6541892  19.00093712 18.94830874 18.96824757 19.6760131 20.57835622]
+Prior SSIM per frame: [0.88893976 0.84401405 0.83558349 0.83384067 0.83629839 0.8475173 0.86507546]
+Prior PSNR overall average: 19.908061297392212 Prior SSIM overall average 0.8501813045505878 Prior flow_err average 1.333213706549941
+
+
+train:
+sto 1:7:1, start_percentage=0.2,  alpha0.00007 gamma=0.00003, mask=1
+nohup python -u train_stochastic.py --gpu=3 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 1 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.1.batch32.alpha0.00007_gamma0.00003_z_channel64_lstm_bisto_l1_120001_mask1_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+
+sto 1:7:3, start_percentage=0.2,  alpha0.00007 gamma=0.00003, mask=1
+nohup python -u train_stochastic.py --gpu=2 --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.alpha0.00007_gamma0.00003_z_channel64_lstm_bisto_l1_120001_mask1_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+
+sto 1:7:3, start_percentage=0.2, no space, alpha0.00007 gamma=0.00003, mask=1
+nohup python -u train_stochastic.py --gpu=0 --no_space_aware --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 1 --start_percentage 0.2 --res_type avg --alpha=0.00007 --gamma=0.00003 --mode bi_sto --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.alpha0.00007_gamma0.00003_z_channel64_no_space_aware_lstm_bisto_l1_120001_mask1_avg_res_ref_negative_noise_picnorm_start_loss_percentage0.2_space_aware_bair &
+
+
+learned prior 1:7:3, start_percentage=1.0,  alpha0.0001, mask=0, no space, no pic_norm
+nohup python -u train_stochastic.py --gpu=2 --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0001 --gamma=0.0 --mode learned_prior --cell_type lstm --pixel_loss l1 &> train.1.7.3.batch32.alpha0.0001_gamma0.0_z_channel64_lstm_learnedprior_l1_120001_mask1_avg_res_ref_negative_noise_nopicnorm_start_loss_percentage1.0_no_space_aware_bair &
+
+
+deter_flexible 1:7:3, start_percentage=1.0, alpha0.0001, mask=0, no space, no pic_norm
+nohup python -u train_stochastic.py --gpu=3 --no_pic_norm --no_space_aware  --num_iter 120001 --batch_size=32 --z_channel 64 --color_channel_num 3 --dataset bair --K 1 --T 7 --B 3 --mask_weight 0 --start_percentage 1.0 --res_type avg --alpha=0.0 --gamma=0.0 --mode deter_flexible --cell_type lstm --pixel_loss l2 &> train.1.7.3.batch32.alpha0.0001_gamma0.0_z_channel64_lstm_deter_flex_l1_120001_mask1_avg_res_ref_negative_noise_nopicnorm_start_loss_percentage1.0_no_space_aware_bair &
